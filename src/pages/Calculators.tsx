@@ -685,7 +685,7 @@ export default function Calculators() {
             <h2>Quantum & Photon Energy Converter</h2>
             <p>
               In OCR A-Level quantum physics, wavelength, frequency, energy in Joules,
-              and energy in electron-volts ($\text{eV}$) are interchangeable. Enter
+              and energy in electron-volts (eV) are interchangeable. Enter
               <strong> any one</strong> value to instantly solve the others.
             </p>
           </div>
