@@ -1,0 +1,66 @@
+// Standard OCR A-Level Physics Data and Formulae constants
+export const PHYSICS_CONSTANTS = {
+  g: {
+    symbol: "g",
+    name: "Acceleration of free fall / Gravitational field strength",
+    value: 9.81,
+    unit: "m/s²",
+    display: "9.81",
+  },
+  c: {
+    symbol: "c",
+    name: "Speed of light in vacuum",
+    value: 3.00e8,
+    unit: "m/s",
+    display: "3.00 × 10⁸",
+  },
+  h: {
+    symbol: "h",
+    name: "Planck constant",
+    value: 6.63e-34,
+    unit: "J s",
+    display: "6.63 × 10⁻³⁴",
+  },
+  e: {
+    symbol: "e",
+    name: "Elementary charge",
+    value: 1.60e-19,
+    unit: "C",
+    display: "1.60 × 10⁻¹⁹",
+  },
+  k: {
+    symbol: "k",
+    name: "Boltzmann constant",
+    value: 1.38e-23,
+    unit: "J/K",
+    display: "1.38 × 10⁻²³",
+  },
+  R: {
+    symbol: "R",
+    name: "Molar gas constant",
+    value: 8.31,
+    unit: "J/(mol K)",
+    display: "8.31",
+  },
+  G: {
+    symbol: "G",
+    name: "Gravitational constant",
+    value: 6.67e-11,
+    unit: "N m²/kg²",
+    display: "6.67 × 10⁻¹¹",
+  },
+  sigma: {
+    symbol: "σ",
+    name: "Stefan-Boltzmann constant",
+    value: 5.67e-8,
+    unit: "W/(m² K⁴)",
+    display: "5.67 × 10⁻⁸",
+  },
+  r0: {
+    symbol: "r₀",
+    name: "Nuclear radius constant",
+    value: 1.2e-15,
+    unit: "m",
+    display: "1.2 × 10⁻¹⁵",
+  },
+} as const;
