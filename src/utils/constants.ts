@@ -1,5 +1,5 @@
-// Standard OCR A-Level Physics Data and Formulae constants
-export const PHYSICS_CONSTANTS = {
+// Standard STEM, Physics, Chemistry and Scientific Constants
+export const STEM_CONSTANTS = {
   g: {
     symbol: "g",
     name: "Acceleration of free fall / Gravitational field strength",
@@ -21,12 +21,40 @@ export const PHYSICS_CONSTANTS = {
     unit: "J s",
     display: "6.63 × 10⁻³⁴",
   },
+  hbar: {
+    symbol: "ħ",
+    name: "Reduced Planck constant (h / 2π)",
+    value: 1.055e-34,
+    unit: "J s",
+    display: "1.055 × 10⁻³⁴",
+  },
   e: {
     symbol: "e",
     name: "Elementary charge",
     value: 1.60e-19,
     unit: "C",
     display: "1.60 × 10⁻¹⁹",
+  },
+  eps0: {
+    symbol: "ε₀",
+    name: "Permittivity of free space",
+    value: 8.85e-12,
+    unit: "F/m",
+    display: "8.85 × 10⁻¹²",
+  },
+  mu0: {
+    symbol: "μ₀",
+    name: "Permeability of free space",
+    value: 1.26e-6,
+    unit: "H/m",
+    display: "1.26 × 10⁻⁶",
+  },
+  ke: {
+    symbol: "kₑ",
+    name: "Coulomb constant (1 / 4πε₀)",
+    value: 8.99e9,
+    unit: "N m²/C²",
+    display: "8.99 × 10⁹",
   },
   k: {
     symbol: "k",
@@ -42,6 +70,20 @@ export const PHYSICS_CONSTANTS = {
     unit: "J/(mol K)",
     display: "8.31",
   },
+  NA: {
+    symbol: "N_A",
+    name: "Avogadro constant",
+    value: 6.022e23,
+    unit: "mol⁻¹",
+    display: "6.022 × 10²³",
+  },
+  F: {
+    symbol: "F",
+    name: "Faraday constant",
+    value: 96485,
+    unit: "C/mol",
+    display: "96485",
+  },
   G: {
     symbol: "G",
     name: "Gravitational constant",
@@ -56,6 +98,34 @@ export const PHYSICS_CONSTANTS = {
     unit: "W/(m² K⁴)",
     display: "5.67 × 10⁻⁸",
   },
+  me: {
+    symbol: "m_e",
+    name: "Electron rest mass",
+    value: 9.11e-31,
+    unit: "kg",
+    display: "9.11 × 10⁻³¹",
+  },
+  mp: {
+    symbol: "m_p",
+    name: "Proton rest mass",
+    value: 1.673e-27,
+    unit: "kg",
+    display: "1.673 × 10⁻²⁷",
+  },
+  mn: {
+    symbol: "m_n",
+    name: "Neutron rest mass",
+    value: 1.675e-27,
+    unit: "kg",
+    display: "1.675 × 10⁻²⁷",
+  },
+  u: {
+    symbol: "u",
+    name: "Unified atomic mass unit",
+    value: 1.661e-27,
+    unit: "kg",
+    display: "1.661 × 10⁻²⁷",
+  },
   r0: {
     symbol: "r₀",
     name: "Nuclear radius constant",
@@ -63,4 +133,14 @@ export const PHYSICS_CONSTANTS = {
     unit: "m",
     display: "1.2 × 10⁻¹⁵",
   },
+  atm: {
+    symbol: "p₀",
+    name: "Standard atmospheric pressure",
+    value: 101325,
+    unit: "Pa",
+    display: "101325",
+  },
 } as const;
+
+// Backward-compatible alias
+export const PHYSICS_CONSTANTS = STEM_CONSTANTS;

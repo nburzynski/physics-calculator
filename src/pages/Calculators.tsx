@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { BlockMath } from "react-katex";
-import "katex/dist/katex.min.css";
 import { formulas } from "../data/formulas";
 import { calculateFormula, formatPhysicsNumber } from "../utils/calculator";
-import { PHYSICS_CONSTANTS } from "../utils/constants";
+import { STEM_CONSTANTS } from "../utils/constants";
+import MathView from "../components/MathView";
+import WorkingSteps from "../components/WorkingSteps";
 import SEO from "../components/SEO";
 
 export default function Calculators() {
@@ -368,9 +368,9 @@ export default function Calculators() {
     const raw = Number(photonInputValue);
     if (!Number.isFinite(raw) || raw <= 0) return null;
 
-    const c = PHYSICS_CONSTANTS.c.value;
-    const h = PHYSICS_CONSTANTS.h.value;
-    const e = PHYSICS_CONSTANTS.e.value;
+    const c = STEM_CONSTANTS.c.value;
+    const h = STEM_CONSTANTS.h.value;
+    const e = STEM_CONSTANTS.e.value;
 
     let lambdaM = 0;
     if (photonInputType === "wavelength") {
@@ -661,12 +661,7 @@ export default function Calculators() {
                       <p className="solved-value">
                         {item.symbol} = {formatPhysicsNumber(item.value)} {item.unit}
                       </p>
-                      <div className="working" style={{ marginTop: "12px", padding: "16px" }}>
-                        <h5>Step-by-Step</h5>
-                        {item.steps.map((st, i) => (
-                          <p key={i} style={{ margin: "4px 0" }}>{st}</p>
-                        ))}
-                      </div>
+                      <WorkingSteps steps={item.steps} title="Step-by-Step Working" />
                     </div>
                   </div>
                 ))}
@@ -766,15 +761,17 @@ export default function Calculators() {
           <div className="panel-header">
             <h2>Potential Divider & Circuit Studio</h2>
             <p>
-              Analyze two resistors in series across a supply voltage $V_{"{in}"}$.
-              Calculate output voltage $V_{"{out}"}$, resistor voltages, circuit current,
+              Analyze two resistors in series across a supply voltage <MathView text="$V_{in}$" />.
+              Calculate output voltage <MathView text="$V_{out}$" />, resistor voltages, circuit current,
               and power dissipation.
             </p>
           </div>
 
           <div className="suvat-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
             <div className="suvat-field">
-              <label htmlFor="div-vin">Supply Voltage $V_{"{in}"}$ (V)</label>
+              <label htmlFor="div-vin">
+                Supply Voltage <MathView text="$V_{in}$" /> (V)
+              </label>
               <input
                 id="div-vin"
                 type="text"
@@ -786,7 +783,9 @@ export default function Calculators() {
             </div>
 
             <div className="suvat-field">
-              <label htmlFor="div-r1">Resistor $R_1$ (Ω)</label>
+              <label htmlFor="div-r1">
+                Resistor <MathView text="$R_1$" /> (Ω)
+              </label>
               <input
                 id="div-r1"
                 type="text"
@@ -798,7 +797,9 @@ export default function Calculators() {
             </div>
 
             <div className="suvat-field">
-              <label htmlFor="div-r2">Resistor $R_2$ across output (Ω)</label>
+              <label htmlFor="div-r2">
+                Resistor <MathView text="$R_2$" /> across output (Ω)
+              </label>
               <input
                 id="div-r2"
                 type="text"
@@ -857,8 +858,7 @@ export default function Calculators() {
           <div className="panel-header">
             <h2>Quick In-Page Formula Runner</h2>
             <p>
-              Select any of the 92 OCR formulas to calculate right here without
-              leaving the page.
+              Select any formula in the library to calculate right here with full step-by-step working.
             </p>
           </div>
 
@@ -879,14 +879,16 @@ export default function Calculators() {
           </div>
 
           <div style={{ margin: "20px 0" }}>
-            <BlockMath math={activeQuickFormula.equation} />
+            <MathView math={activeQuickFormula.equation} block={true} />
           </div>
 
           <div className="calculator-form">
             {activeQuickFormula.variables.map((v) => (
               <div className="calculator-var-row" key={v.id}>
                 <div className="var-info">
-                  <span className="var-symbol">{v.symbol}</span>
+                  <span className="var-symbol">
+                    <MathView text={v.symbol} />
+                  </span>
                   <span className="var-name">
                     {v.name}
                     {v.isConstant && <span className="var-constant-tag">CONSTANT</span>}
@@ -903,7 +905,11 @@ export default function Calculators() {
                     }
                     placeholder="Leave blank to solve"
                   />
-                  <span className="var-unit">{v.unit}</span>
+                  {v.unit && (
+                    <span className="var-unit">
+                      <MathView text={v.unit} />
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
@@ -938,12 +944,7 @@ export default function Calculators() {
               <p className="eyebrow">RESULT</p>
               <h2>{quickResult}</h2>
               {quickWorking.length > 0 && (
-                <div className="working">
-                  <h3>Working Steps</h3>
-                  {quickWorking.map((step, i) => (
-                    <p key={i}>{step}</p>
-                  ))}
-                </div>
+                <WorkingSteps steps={quickWorking} title="Step-by-Step Working" />
               )}
             </div>
           )}

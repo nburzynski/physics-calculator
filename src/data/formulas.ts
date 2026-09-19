@@ -1,6 +1,6 @@
 import type { Formula } from "../types/formula";
 
-export const formulas: Formula[] = [
+const physicsFormulas: Formula[] = [
   // ============================================================
   // MODULE 2 — FOUNDATIONS OF PHYSICS
   // ============================================================
@@ -1635,3 +1635,78 @@ export const formulas: Formula[] = [
     ],
   },
 ];
+
+import { stemCalculators } from "./stemCalculators";
+
+export const formulas: Formula[] = [
+  ...physicsFormulas.map((f) => ({
+    ...f,
+    subjectId: (f.subjectId ?? "physics") as "physics",
+  })),
+  ...stemCalculators,
+];
+
+export function getFormulaById(id: string): Formula | undefined {
+  return formulas.find((f) => f.id === id);
+}
+
+function normalizeTopicKey(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/-/g, " ")
+    .replace(/,/g, "")
+    .replace(/&/g, "")
+    .replace(/\band\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+export function getFormulasByTopic(topicNameOrId: string): Formula[] {
+  const normKey = normalizeTopicKey(topicNameOrId);
+  const rawLower = topicNameOrId.toLowerCase().trim();
+
+  return formulas.filter((f) => {
+    if (f.topicId && (f.topicId === topicNameOrId || normalizeTopicKey(f.topicId) === normKey)) {
+      return true;
+    }
+    if (f.topic.toLowerCase() === rawLower) {
+      return true;
+    }
+    if (normalizeTopicKey(f.topic) === normKey) {
+      return true;
+    }
+    return false;
+  });
+}
+
+export function getFormulasBySubject(subjectId: string): Formula[] {
+  return formulas.filter((f) => (f.subjectId ?? "physics") === subjectId);
+}
+
+export function getRelatedFormulas(formula: Formula, limit = 4): Formula[] {
+  if (formula.relatedFormulaIds && formula.relatedFormulaIds.length > 0) {
+    const explicitlyRelated = formulas.filter((f) =>
+      formula.relatedFormulaIds?.includes(f.id)
+    );
+    if (explicitlyRelated.length > 0) return explicitlyRelated.slice(0, limit);
+  }
+
+  // Same topic first
+  const sameTopic = formulas.filter(
+    (f) => f.id !== formula.id && f.topic === formula.topic
+  );
+  if (sameTopic.length >= limit) {
+    return sameTopic.slice(0, limit);
+  }
+
+  // Same subject fallback
+  const sameSubject = formulas.filter(
+    (f) =>
+      f.id !== formula.id &&
+      f.topic !== formula.topic &&
+      (f.subjectId ?? "physics") === (formula.subjectId ?? "physics")
+  );
+
+  return [...sameTopic, ...sameSubject].slice(0, limit);
+}

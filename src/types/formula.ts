@@ -1,3 +1,5 @@
+import type { SubjectId } from "./stem";
+
 export type FormulaVariable = {
   id: string;
   symbol: string;
@@ -5,6 +7,9 @@ export type FormulaVariable = {
   unit: string;
   defaultValue?: string;
   isConstant?: boolean;
+  min?: number;
+  max?: number;
+  description?: string;
 };
 
 export type Formula = {
@@ -32,4 +37,15 @@ export type Formula = {
     | "capacitance"
     | "capacitor-energy"
     | "custom";
+
+  // Extended metadata for general STEM platform
+  subjectId?: SubjectId;
+  topicId?: string;
+  subtopic?: string;
+  keywords?: string[];
+  relatedFormulaIds?: string[];
+  notes?: string[];
+  assumptions?: string[];
+  examBoard?: string;
+  difficulty?: "GCSE / School" | "A-Level / High School" | "University / Advanced";
 };

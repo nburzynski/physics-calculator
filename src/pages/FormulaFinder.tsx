@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { BlockMath } from "react-katex";
-import "katex/dist/katex.min.css";
+import MathView from "../components/MathView";
 import { formulas } from "../data/formulas";
 import SEO from "../components/SEO";
 
@@ -80,15 +79,12 @@ export default function FormulaFinder() {
     setSearchQuery("");
   };
 
-  // Target symbols filter
-  const targetFilter = TARGET_QUANTITIES[selectedTargetIndex];
-  const targetSymbols = targetFilter.symbols ?? [];
-
-  // Parse any symbols from query
-  const queryWords = searchQuery.toLowerCase().split(/[\s,]+/).filter(Boolean);
-
   // Matching algorithm
   const matches = useMemo(() => {
+    const targetFilter = TARGET_QUANTITIES[selectedTargetIndex];
+    const targetSymbols = targetFilter?.symbols ?? [];
+    const queryWords = searchQuery.toLowerCase().split(/[\s,]+/).filter(Boolean);
+
     const results = formulas.map((formula) => {
       const formulaSymbols = formula.variables.map((v) => v.symbol);
       const formulaVarNames = formula.variables.map((v) => v.name.toLowerCase());
@@ -144,7 +140,6 @@ export default function FormulaFinder() {
       }
 
       // Calculate completeness
-      // For a formula of N variables, if we know N-1 variables and 1 is unknown/target, it is SOLVABLE NOW!
       const totalVars = formula.variables.length;
       const isSolvableNow =
         (matchedVars.length === totalVars - 1 && targetVariable !== "") ||
@@ -175,7 +170,7 @@ export default function FormulaFinder() {
       if (!a.isSolvableNow && b.isSolvableNow) return 1;
       return b.score - a.score;
     });
-  }, [selectedSymbols, targetSymbols, queryWords]);
+  }, [selectedSymbols, selectedTargetIndex, searchQuery]);
 
   const solvableCount = matches.filter((m) => m.isSolvableNow).length;
 
@@ -311,7 +306,7 @@ export default function FormulaFinder() {
                 <h2 className="finder-card-title">{formula.name}</h2>
 
                 <div className="finder-card-math">
-                  <BlockMath math={formula.equation} />
+                  <MathView math={formula.equation} block={true} />
                 </div>
 
                 <p className="finder-card-desc">{formula.description}</p>

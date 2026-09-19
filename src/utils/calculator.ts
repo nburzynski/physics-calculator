@@ -1916,8 +1916,209 @@ export function calculateFormula(
     }
   }
 
+  // ============================================================
+  // STEM PLATFORM STARTER SOLVERS
+  // ============================================================
+  if (formula.id === "quadratic-formula") {
+    const a = val("a");
+    const b = val("b");
+    const c = val("c");
+    if (a === 0) return { success: false, error: "Coefficient 'a' cannot be zero for a quadratic equation (must be non-zero)." };
+    const disc = b * b - 4 * a * c;
+
+    if (disc > 0) {
+      const sqrtDisc = Math.sqrt(disc);
+      const r1 = (-b + sqrtDisc) / (2 * a);
+      const r2 = (-b - sqrtDisc) / (2 * a);
+      return {
+        success: true,
+        answer: r1,
+        formattedAnswer: `x₁ = ${fNum(r1)}, x₂ = ${fNum(r2)}`,
+        variableSymbol: "x",
+        unit: "",
+        steps: [
+          `1. Formula: ${eq}`,
+          `2. Discriminant: \\Delta = b^2 - 4ac = (${fNum(b)})^2 - 4(${fNum(a)})(${fNum(c)}) = ${fNum(disc)}`,
+          `3. Substitute: x = \\frac{-(${fNum(b)}) \\pm \\sqrt{${fNum(disc)}}}{2(${fNum(a)})}`,
+          `4. Answer: x_1 = ${fNum(r1)}, \\quad x_2 = ${fNum(r2)} \\quad (\\text{Two real roots})`,
+        ],
+      };
+    } else if (disc === 0) {
+      const r = -b / (2 * a);
+      return {
+        success: true,
+        answer: r,
+        formattedAnswer: `x = ${fNum(r)} (repeated root)`,
+        variableSymbol: "x",
+        unit: "",
+        steps: [
+          `1. Formula: ${eq}`,
+          `2. Discriminant: \\Delta = b^2 - 4ac = 0`,
+          `3. Substitute: x = \\frac{-(${fNum(b)})}{2(${fNum(a)})}`,
+          `4. Answer: x = ${fNum(r)} \\quad (\\text{One repeated real root})`,
+        ],
+      };
+    } else {
+      const realPart = -b / (2 * a);
+      const imagPart = Math.sqrt(-disc) / (2 * a);
+      return {
+        success: true,
+        answer: realPart,
+        formattedAnswer: `${fNum(realPart)} ± ${fNum(imagPart)}i`,
+        variableSymbol: "x",
+        unit: "",
+        steps: [
+          `1. Formula: ${eq}`,
+          `2. Discriminant: \\Delta = b^2 - 4ac = ${fNum(disc)} < 0`,
+          `3. Substitute: x = \\frac{-(${fNum(b)}) \\pm i\\sqrt{${fNum(-disc)}}}{2(${fNum(a)})}`,
+          `4. Answer: x = ${fNum(realPart)} \\pm ${fNum(imagPart)}i \\quad (\\text{Complex conjugate roots})`,
+        ],
+      };
+    }
+  }
+
+  if (formula.id === "pythagorean-theorem") {
+    const c = val("c");
+    const a = val("a");
+    const b = val("b");
+    if (missing === "c") {
+      const ans = Math.sqrt(a * a + b * b);
+      return makeSteps(eq, symbol, unit, "c = \\sqrt{a^2 + b^2}", `c = \\sqrt{(${fNum(a)})^2 + (${fNum(b)})^2}`, ans);
+    }
+    if (missing === "a") {
+      if (c <= b) return { success: false, error: "Hypotenuse c must be strictly greater than leg b." };
+      const ans = Math.sqrt(c * c - b * b);
+      return makeSteps(eq, symbol, unit, "a = \\sqrt{c^2 - b^2}", `a = \\sqrt{(${fNum(c)})^2 - (${fNum(b)})^2}`, ans);
+    }
+    if (missing === "b") {
+      if (c <= a) return { success: false, error: "Hypotenuse c must be strictly greater than leg a." };
+      const ans = Math.sqrt(c * c - a * a);
+      return makeSteps(eq, symbol, unit, "b = \\sqrt{c^2 - a^2}", `b = \\sqrt{(${fNum(c)})^2 - (${fNum(a)})^2}`, ans);
+    }
+  }
+
+  if (formula.id === "vector-2d-dot-product") {
+    const ax = val("ax");
+    const ay = val("ay");
+    const bx = val("bx");
+    const by = val("by");
+    const dot = ax * bx + ay * by;
+    const magA = Math.sqrt(ax * ax + ay * ay);
+    const magB = Math.sqrt(bx * bx + by * by);
+    let angleStr = "";
+    if (magA > 0 && magB > 0) {
+      const cosTheta = Math.max(-1, Math.min(1, dot / (magA * magB)));
+      const thetaDeg = (Math.acos(cosTheta) * 180) / Math.PI;
+      angleStr = ` (Angle \\theta = ${fNum(thetaDeg)}^\\circ)`;
+    }
+    return {
+      success: true,
+      answer: dot,
+      formattedAnswer: `${fNum(dot)}${angleStr}`,
+      variableSymbol: "a · b",
+      unit: "",
+      steps: [
+        `1. Formula: ${eq}`,
+        `2. Substitute: \\mathbf{a} \\cdot \\mathbf{b} = (${fNum(ax)})(${fNum(bx)}) + (${fNum(ay)})(${fNum(by)})`,
+        `3. Magnitudes: |\\mathbf{a}| = ${fNum(magA)}, \\quad |\\mathbf{b}| = ${fNum(magB)}`,
+        `4. Answer: \\mathbf{a} \\cdot \\mathbf{b} = ${fNum(dot)}${angleStr}`,
+      ],
+    };
+  }
+
+  if (formula.id === "solution-dilution") {
+    const c1 = val("c1");
+    const v1 = val("v1");
+    const c2 = val("c2");
+    const v2 = val("v2");
+    if (missing === "c2") {
+      if (v2 === 0) return { success: false, error: "Final volume V2 cannot be zero." };
+      const ans = (c1 * v1) / v2;
+      return makeSteps(eq, symbol, unit, "C_2 = (C_1 \\times V_1) \\div V_2", `C_2 = (${fNum(c1)} \\times ${fNum(v1)}) \\div ${fNum(v2)}`, ans);
+    }
+    if (missing === "v2") {
+      if (c2 === 0) return { success: false, error: "Final concentration C2 cannot be zero." };
+      const ans = (c1 * v1) / c2;
+      return makeSteps(eq, symbol, unit, "V_2 = (C_1 \\times V_1) \\div C_2", `V_2 = (${fNum(c1)} \\times ${fNum(v1)}) \\div ${fNum(c2)}`, ans);
+    }
+    if (missing === "c1") {
+      if (v1 === 0) return { success: false, error: "Initial volume V1 cannot be zero." };
+      const ans = (c2 * v2) / v1;
+      return makeSteps(eq, symbol, unit, "C_1 = (C_2 \\times V_2) \\div V_1", `C_1 = (${fNum(c2)} \\times ${fNum(v2)}) \\div ${fNum(v1)}`, ans);
+    }
+    if (missing === "v1") {
+      if (c1 === 0) return { success: false, error: "Initial concentration C1 cannot be zero." };
+      const ans = (c2 * v2) / c1;
+      return makeSteps(eq, symbol, unit, "V_1 = (C_2 \\times V_2) \\div C_1", `V_1 = (${fNum(c2)} \\times ${fNum(v2)}) \\div ${fNum(c1)}`, ans);
+    }
+  }
+
+  if (formula.id === "ph-concentration") {
+    const ph = val("ph");
+    const hConc = val("h-conc");
+    if (missing === "ph") {
+      if (hConc <= 0) return { success: false, error: "Hydrogen ion concentration must be strictly positive (> 0)." };
+      const ans = -Math.log10(hConc);
+      return makeSteps(eq, symbol, unit, "\\text{pH} = -\\log_{10}[\\text{H}^+]", `\\text{pH} = -\\log_{10}(${fNum(hConc)})`, ans);
+    }
+    if (missing === "h-conc") {
+      const ans = Math.pow(10, -ph);
+      return makeSteps(eq, symbol, unit, "[\\text{H}^+] = 10^{-\\text{pH}}", `[\\text{H}^+] = 10^{-${fNum(ph)}}`, ans);
+    }
+  }
+
+  if (formula.id === "calorimetry-heat-energy") {
+    const q = val("heat");
+    const m = val("mass");
+    const c = val("specific-heat");
+    const deltaT = val("temp-change");
+    if (missing === "heat") {
+      const ans = m * c * deltaT;
+      return makeSteps(eq, symbol, unit, "q = m \\times c \\times \\Delta T", `q = ${fNum(m)} \\times ${fNum(c)} \\times ${fNum(deltaT)}`, ans);
+    }
+    if (missing === "mass") {
+      const denom = c * deltaT;
+      if (denom === 0) return { success: false, error: "Denominator (c × ΔT) cannot be zero." };
+      const ans = q / denom;
+      return makeSteps(eq, symbol, unit, "m = q \\div (c \\times \\Delta T)", `m = ${fNum(q)} \\div (${fNum(c)} \\times ${fNum(deltaT)})`, ans);
+    }
+    if (missing === "specific-heat") {
+      const denom = m * deltaT;
+      if (denom === 0) return { success: false, error: "Denominator (m × ΔT) cannot be zero." };
+      const ans = q / denom;
+      return makeSteps(eq, symbol, unit, "c = q \\div (m \\times \\Delta T)", `c = ${fNum(q)} \\div (${fNum(m)} \\times ${fNum(deltaT)})`, ans);
+    }
+    if (missing === "temp-change") {
+      const denom = m * c;
+      if (denom === 0) return { success: false, error: "Denominator (m × c) cannot be zero." };
+      const ans = q / denom;
+      return makeSteps(eq, symbol, unit, "\\Delta T = q \\div (m \\times c)", `\\Delta T = ${fNum(q)} \\div (${fNum(m)} \\times ${fNum(c)})`, ans);
+    }
+  }
+
+  if (formula.id === "data-transfer-time") {
+    const t = val("time");
+    const D = val("size");
+    const R = val("speed");
+    if (missing === "time") {
+      if (R <= 0) return { success: false, error: "Network speed must be greater than 0 Mbps." };
+      const ans = (D * 8) / R;
+      return makeSteps(eq, symbol, unit, "t = (D \\text{ MB} \\times 8) \\div R \\text{ Mbps}", `t = (${fNum(D)} \\times 8) \\div ${fNum(R)}`, ans);
+    }
+    if (missing === "size") {
+      const ans = (t * R) / 8;
+      return makeSteps(eq, symbol, unit, "D = (t \\times R) \\div 8", `D = (${fNum(t)} \\times ${fNum(R)}) \\div 8`, ans);
+    }
+    if (missing === "speed") {
+      if (t <= 0) return { success: false, error: "Time must be greater than 0 seconds." };
+      const ans = (D * 8) / t;
+      return makeSteps(eq, symbol, unit, "R = (D \\times 8) \\div t", `R = (${fNum(D)} \\times 8) \\div ${fNum(t)}`, ans);
+    }
+  }
+
   return {
     success: false,
     error: "Calculation not available for this formula configuration.",
   };
 }
+
