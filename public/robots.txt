@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://stemcalculate.com/sitemap.xml
+Sitemap: https://www.stemcalculate.com/sitemap.xml
