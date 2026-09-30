@@ -2644,6 +2644,752 @@
 }
 
 /* ======================================================== */
+/* INTERACTIVE MATHEMATICAL CALCULATOR & FORMULA RENDERER */
+/* ======================================================== */
+
+.interactive-calculator-card {
+  background: #ffffff;
+  border: 1px solid #d9dee7;
+  border-radius: 8px;
+  padding: 32px;
+  box-shadow: 0 2px 12px rgba(11, 31, 58, 0.04);
+  margin-bottom: 40px;
+}
+
+.calculator-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.calculator-card-header h2 {
+  margin: 0 0 6px;
+  font-size: 1.4rem;
+  color: #0b1f3a;
+}
+
+.calculator-instructions {
+  margin: 0;
+  color: #53657d;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.target-solver-selector {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.target-selector-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #475569;
+}
+
+.target-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.target-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.target-pill-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.target-pill-btn.active {
+  background: #0b1f3a;
+  border-color: #0b1f3a;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(11, 31, 58, 0.12);
+}
+
+.pill-var-symbol {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 700;
+}
+
+/* FORMULA VIEWPORT */
+
+.formula-interactive-viewport {
+  position: relative;
+  padding: 36px 20px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.formula-viewport-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.interactive-formula-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.interactive-formula-equation {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+  color: #0b1f3a;
+  font-family: "KaTeX_Main", Georgia, "Times New Roman", serif;
+  line-height: 1.5;
+}
+
+/* MATH INPUTS */
+
+.math-input-wrapper {
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid #94a3b8;
+  border-radius: 6px;
+  padding: 3px 8px;
+  margin: 0 4px;
+  vertical-align: middle;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.math-input-wrapper:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.math-inline-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: Consolas, "Fira Code", monospace;
+  font-size: 0.9em;
+  font-weight: 700;
+  color: #0b1f3a;
+  width: 72px;
+  min-width: 55px;
+  text-align: center;
+  padding: 2px;
+}
+
+.math-inline-input::placeholder {
+  color: #94a3b8;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.math-inline-input.is-constant {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.math-input-unit-badge {
+  font-size: 0.65em;
+  font-weight: 600;
+  color: #64748b;
+  margin-left: 4px;
+  padding-left: 6px;
+  border-left: 1px solid #e2e8f0;
+  user-select: none;
+  line-height: 1;
+}
+
+/* TARGET VARIABLE DISPLAY */
+
+.math-target-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  background: #eff6ff;
+  border: 1.5px dashed #2563eb;
+  border-radius: 6px;
+  color: #1d4ed8;
+  font-weight: 700;
+  font-size: 1em;
+  vertical-align: middle;
+  min-width: 38px;
+}
+
+.math-target-resolved {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: #f0fdf4;
+  border: 1.5px solid #16a34a;
+  border-radius: 6px;
+  color: #15803d;
+  font-weight: 700;
+  font-size: 1em;
+  vertical-align: middle;
+}
+
+.math-target-answer {
+  margin-left: 6px;
+  color: #166534;
+}
+
+.math-target-unit {
+  font-size: 0.8em;
+  color: #15803d;
+  margin-left: 4px;
+}
+
+/* FRACTIONS */
+
+.math-fraction {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  align-items: center;
+  margin: 0 6px;
+}
+
+.math-fraction-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+}
+
+.math-fraction-bar {
+  width: 100%;
+  min-width: 100%;
+  height: 2px;
+  background: #0b1f3a;
+  margin: 3px 0;
+  border-radius: 1px;
+}
+
+.math-fraction-den {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+}
+
+/* POWERS & SUBSCRIPTS */
+
+.math-power {
+  display: inline-flex;
+  align-items: baseline;
+  vertical-align: middle;
+}
+
+.math-power-exp {
+  font-size: 0.68em;
+  font-weight: 700;
+  color: #0b1f3a;
+  margin-left: 2px;
+  vertical-align: super;
+  line-height: 1;
+}
+
+.math-subscript-wrap {
+  display: inline-flex;
+  align-items: baseline;
+  vertical-align: middle;
+}
+
+.math-subscript-val {
+  font-size: 0.68em;
+  color: #475569;
+  margin-left: 1px;
+  vertical-align: sub;
+  line-height: 1;
+}
+
+/* ROOTS & BRACKETS */
+
+.math-sqrt {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
+.math-sqrt-radical {
+  font-size: 1.4em;
+  line-height: 1;
+  color: #0b1f3a;
+  font-weight: 400;
+  margin-right: 1px;
+}
+
+.math-sqrt-radicand {
+  border-top: 2px solid #0b1f3a;
+  padding-top: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.math-brackets {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.math-bracket-symbol {
+  font-size: 1.2em;
+  color: #0b1f3a;
+  font-weight: 300;
+}
+
+.math-bracket-content {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 2px;
+}
+
+/* FUNCTIONS & OPERATORS */
+
+.math-function-wrap {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 2px;
+}
+
+.math-function-name {
+  font-family: Georgia, serif;
+  font-style: normal;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.math-symbol {
+  font-size: 0.95em;
+  color: #0b1f3a;
+  margin: 0 3px;
+  user-select: none;
+}
+
+.math-symbol.math-equals {
+  font-weight: 700;
+  margin: 0 6px;
+}
+
+.math-constant-number {
+  font-weight: 700;
+  color: #0b1f3a;
+  margin: 0 2px;
+}
+
+.math-row {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ACTIONS BAR */
+
+.calculator-actions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.calc-submit-btn {
+  padding: 12px 24px;
+  background: #0b1f3a;
+  color: #ffffff;
+  border: 1px solid #0b1f3a;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.calc-submit-btn:hover {
+  background: #1e3a8a;
+  border-color: #1e3a8a;
+}
+
+.calc-clear-btn {
+  padding: 12px 18px;
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.calc-clear-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0b1f3a;
+}
+
+.calc-reset-btn {
+  padding: 12px 18px;
+  background: #f8fafc;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.calc-reset-btn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.calculator-error-bar {
+  background: #fef2f2;
+  border: 1px solid #f87171;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.error-icon-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #dc2626;
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+/* OUTCOME PANEL */
+
+.calculation-outcome-panel {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.outcome-display {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #15803d;
+  margin-top: 8px;
+}
+
+.outcome-symbol {
+  color: #166534;
+}
+
+.outcome-steps-wrap {
+  margin-top: 20px;
+  border-top: 1px solid #bbf7d0;
+  padding-top: 16px;
+}
+
+/* VARIABLES TABLE */
+
+.formula-variables-table-section {
+  margin-top: 32px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 24px;
+}
+
+.variables-table-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0b1f3a;
+  margin-bottom: 16px;
+}
+
+.variables-table-responsive {
+  overflow-x: auto;
+}
+
+.variables-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.variables-data-table th,
+.variables-data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.variables-data-table th {
+  background: #f8fafc;
+  font-weight: 700;
+  color: #334155;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.variables-data-table tr.is-target-row {
+  background: #eff6ff;
+}
+
+.var-cell-symbol {
+  font-weight: 700;
+  color: #0b1f3a;
+  font-family: Georgia, serif;
+}
+
+.var-cell-name {
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.var-cell-desc {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.var-cell-unit {
+  color: #475569;
+  font-weight: 600;
+}
+
+.badge-target {
+  display: inline-block;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #bfdbfe;
+}
+
+.badge-constant {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.badge-input {
+  display: inline-block;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* WORKED EXAMPLES */
+
+.worked-example-section {
+  margin: 48px 0;
+}
+
+.worked-example-card {
+  background: #ffffff;
+  border: 1px solid #d9dee7;
+  border-radius: 8px;
+  padding: 28px;
+  box-shadow: 0 2px 8px rgba(11, 31, 58, 0.03);
+}
+
+.example-problem {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: #0b1f3a;
+  margin: 0 0 20px;
+}
+
+.example-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.step-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #2563eb;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.example-given-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.given-name {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.example-math-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.example-answer-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  background: #eff6ff;
+  border-left: 3px solid #2563eb;
+  border-radius: 0 4px 4px 0;
+}
+
+.answer-target {
+  font-size: 0.85rem;
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.answer-val {
+  font-weight: 700;
+  color: #1e3a8a;
+  font-size: 1.05rem;
+}
+
+.example-note {
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+  color: #53657d;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ACRONYM CODE BADGES */
+
+.pill-code-tag,
+.topic-code-badge,
+.section-topic-code,
+.rel-code-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  color: #334155;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.topic-code-badge.large {
+  font-size: 0.85rem;
+  padding: 4px 8px;
+}
+
+.concepts-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tool-card-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
+/* ======================================================== */
 /* MOBILE RESPONSIVENESS */
 /* ======================================================== */
 
@@ -2688,6 +3434,49 @@
     padding: 24px 16px;
   }
 
+  .interactive-calculator-card {
+    padding: 20px 14px;
+  }
+
+  .formula-interactive-viewport {
+    padding: 30px 12px;
+  }
+
+  .interactive-formula-equation {
+    font-size: 1.15rem;
+    gap: 6px;
+  }
+
+  .math-inline-input {
+    width: 58px;
+    min-width: 48px;
+    font-size: 0.85em;
+  }
+
+  .math-input-wrapper {
+    padding: 2px 4px;
+    margin: 0 2px;
+  }
+
+  .calculator-actions-bar {
+    flex-direction: column;
+  }
+
+  .calc-submit-btn,
+  .calc-clear-btn,
+  .calc-reset-btn {
+    width: 100%;
+  }
+
+  .outcome-display {
+    font-size: 1.4rem;
+    flex-wrap: wrap;
+  }
+
+  .example-steps-grid {
+    grid-template-columns: 1fr;
+  }
+
   .working-step-item {
     flex-direction: column;
     align-items: flex-start;
@@ -2717,7 +3506,7 @@
   .topic-landing-page,
   .formula-page-wrapper,
   .library-container {
-    padding: 40px 5%;
+    padding: 30px 4%;
   }
 
   .finder-controls-grid {

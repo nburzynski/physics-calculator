@@ -81,8 +81,8 @@ export function FormulaLibrary() {
   return (
     <main className="formula-library-page">
       <SEO
-        title="STEM Formula Library | 100+ Step-by-Step Physics, Maths & Chemistry Solvers"
-        description="Comprehensive reference library of over 100 STEM formulas across Physics, Mathematics, Chemistry, Engineering, and Computer Science with instant interactive solvers."
+        title="STEM Formula Library | Physics, Mathematics &amp; Chemistry Equations"
+        description="Comprehensive reference library of over 100 STEM formulas across Physics, Mathematics, Chemistry, Engineering, and Computer Science with instant interactive mathematical solvers."
         canonicalPath="/formulas"
         keywords={[
           "STEM formula library",
@@ -102,32 +102,39 @@ export function FormulaLibrary() {
           <h1>STEM Formula Library</h1>
           <p>
             Browse all {formulas.length} formulas across STEM subjects. Filter by subject
-            or search by keyword/variable to open any equation solver.
+            or search by keyword/variable to open any equation calculator.
           </p>
 
           {/* Search & Subject Bar */}
           <div className="library-controls-bar">
             <div className="library-search-input-wrap">
-              <span className="search-icon">🔍</span>
+              <span className="search-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </span>
               <input
                 type="text"
                 className="library-search-input"
                 placeholder="Filter formulas by name, variable (e.g. 'SUVAT', 'quadratic', 'v', 'u', 'momentum')..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                aria-label="Filter formulas by name or variable"
               />
               {searchTerm && (
                 <button
                   type="button"
                   className="clear-search-btn"
                   onClick={() => setSearchTerm("")}
+                  aria-label="Clear filter search"
                 >
                   ✕
                 </button>
               )}
             </div>
 
-            <div className="subject-filter-bar">
+            <div className="subject-filter-bar" role="group" aria-label="Filter formulas by subject">
               <button
                 type="button"
                 className={`subject-pill ${selectedSubject === "all" ? "active" : ""}`}
@@ -144,7 +151,7 @@ export function FormulaLibrary() {
                     className={`subject-pill ${selectedSubject === sub.id ? "active" : ""}`}
                     onClick={() => handleSubjectChange(sub.id)}
                   >
-                    <span className="pill-icon">{sub.icon}</span> {sub.name} ({count})
+                    <span className="pill-code-tag">{sub.icon}</span> {sub.name} ({count})
                   </button>
                 );
               })}
@@ -170,11 +177,11 @@ export function FormulaLibrary() {
           </div>
         ) : (
           displayedTopicSections.map(({ topic, formulas: topicFormulas }) => (
-            <section key={topic.id} className="formula-list-section">
+            <section key={topic.id} className="formula-list-section" aria-labelledby={`topic-sec-${topic.id}`}>
               <div className="library-section-heading">
                 <div className="section-title-wrap">
-                  <span className="section-topic-icon">{topic.icon}</span>
-                  <Link to={`/topics/${topic.slug}`} className="section-topic-link">
+                  <span className="section-topic-code">{topic.icon}</span>
+                  <Link to={`/topics/${topic.slug}`} className="section-topic-link" id={`topic-sec-${topic.id}`}>
                     {topic.name.toUpperCase()}
                   </Link>
                   <span className="section-subject-tag">{topic.subjectId.toUpperCase()}</span>
@@ -182,7 +189,7 @@ export function FormulaLibrary() {
 
                 <div className="section-count-wrap">
                   <Link to={`/topics/${topic.slug}`} className="view-topic-guide-link">
-                    Topic Guide &rarr;
+                    Topic Reference &rarr;
                   </Link>
                   <span className="formula-count-badge">
                     {topicFormulas.length} {topicFormulas.length === 1 ? "FORMULA" : "FORMULAS"}

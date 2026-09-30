@@ -299,7 +299,7 @@ export default function FormulaFinder() {
                 <div className="finder-card-header">
                   <span className="finder-topic">{formula.topic}</span>
                   {isSolvableNow && (
-                    <span className="badge-solvable">✨ SOLVABLE NOW</span>
+                    <span className="badge-solvable">SOLVABLE NOW</span>
                   )}
                 </div>
 
@@ -331,7 +331,7 @@ export default function FormulaFinder() {
                   {targetVariable && (
                     <div className="status-row">
                       <span className="status-label">Solving for:</span>
-                      <span className="tag tag-target">🎯 {targetVariable}</span>
+                      <span className="tag tag-target">{targetVariable}</span>
                     </div>
                   )}
 

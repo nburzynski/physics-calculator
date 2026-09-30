@@ -10,7 +10,7 @@ export const TOPICS: Topic[] = [
     name: "Forces and Motion",
     subjectId: "physics",
     description: "Motion kinematics, SUVAT equations, Newton's laws, momentum, work, kinetic energy, power, density, and elasticity.",
-    icon: "🚀",
+    icon: "KIN",
     concepts: [
       "Constant acceleration kinematics (SUVAT)",
       "Newton's laws of motion and momentum",
@@ -26,7 +26,7 @@ export const TOPICS: Topic[] = [
     name: "Electrons, Waves and Photons",
     subjectId: "physics",
     description: "Electric current, Kirchhoff's laws, potential dividers, wave speed, diffraction grating, photoelectric effect, and de Broglie wavelength.",
-    icon: "⚡",
+    icon: "WAVE",
     concepts: [
       "Electric current, charge, and drift velocity",
       "Potential difference, resistance, and resistivity",
@@ -42,7 +42,7 @@ export const TOPICS: Topic[] = [
     name: "Newtonian World and Astrophysics",
     subjectId: "physics",
     description: "Thermal physics, ideal gas laws, circular motion, simple harmonic motion, gravitational fields, Kepler's laws, stellar radiation, and Hubble's law.",
-    icon: "🪐",
+    icon: "ASTRO",
     concepts: [
       "Specific heat capacity and latent heat",
       "Ideal gas equations (pV = NkT and pV = nRT)",
@@ -59,7 +59,7 @@ export const TOPICS: Topic[] = [
     name: "Particles and Medical Physics",
     subjectId: "physics",
     description: "Capacitors, uniform and radial electric fields, magnetic flux and forces, radioactive decay, binding energy, X-ray attenuation, and ultrasound.",
-    icon: "⚛️",
+    icon: "PART",
     concepts: [
       "Capacitance, series/parallel capacitors, and exponential decay",
       "Coulomb's law, electric field strength, and electric potential",
@@ -75,7 +75,7 @@ export const TOPICS: Topic[] = [
     name: "Foundations of Physics",
     subjectId: "physics",
     description: "Physical quantities, SI base units, horizontal and vertical vector resolution, scalar and vector kinematics, and experimental uncertainty.",
-    icon: "📐",
+    icon: "BASE",
     concepts: [
       "SI base units and derived units",
       "Vector resolution (horizontal & vertical components)",
@@ -93,7 +93,7 @@ export const TOPICS: Topic[] = [
     name: "Algebra and Quadratics",
     subjectId: "mathematics",
     description: "Quadratic formula solver, discriminant analysis, roots calculation, and polynomial equations.",
-    icon: "🔢",
+    icon: "ALG",
     concepts: [
       "Quadratic equation standard form (ax² + bx + c = 0)",
       "Discriminant analysis (b² - 4ac) for real and complex roots",
@@ -107,7 +107,7 @@ export const TOPICS: Topic[] = [
     name: "Trigonometry and Geometry",
     subjectId: "mathematics",
     description: "Pythagorean theorem, distance formula, sine rule, cosine rule, and 2D/3D geometric relations.",
-    icon: "📐",
+    icon: "TRIG",
     concepts: [
       "Pythagorean theorem in 2D and 3D",
       "Trigonometric sine, cosine, and tangent ratios",
@@ -122,7 +122,7 @@ export const TOPICS: Topic[] = [
     name: "Vectors and Coordinates",
     subjectId: "mathematics",
     description: "Vector magnitudes in 2D and 3D, scalar dot product, angle between vectors, and unit vectors.",
-    icon: "↗️",
+    icon: "VEC",
     concepts: [
       "Vector magnitude in 2D and 3D space",
       "Scalar dot product (a · b = |a||b| cos θ)",
@@ -141,7 +141,7 @@ export const TOPICS: Topic[] = [
     name: "Stoichiometry and Moles",
     subjectId: "chemistry",
     description: "Mole-mass-particle calculations, molar mass conversions, Avogadro constant relationships, and percentage yield.",
-    icon: "⚗️",
+    icon: "MOL",
     concepts: [
       "Amount of substance: n = m / M",
       "Particle counting with Avogadro constant: N = n × N_A",
@@ -155,7 +155,7 @@ export const TOPICS: Topic[] = [
     name: "Solutions and Molarity",
     subjectId: "chemistry",
     description: "Solution concentration (c = n / V), mass concentration, and standard solution dilution formula (C₁V₁ = C₂V₂).",
-    icon: "🧪",
+    icon: "SOL",
     concepts: [
       "Molar concentration: c = n / V",
       "Mass concentration: ρ = m / V",
@@ -169,7 +169,7 @@ export const TOPICS: Topic[] = [
     name: "Gas Laws and Thermochemistry",
     subjectId: "chemistry",
     description: "Ideal gas law (pV = nRT), molar gas volume, enthalpy change of reactions (q = mcΔT), and calorimetry.",
-    icon: "🔥",
+    icon: "GAS",
     concepts: [
       "Ideal gas equation: pV = nRT",
       "Heat energy transfer: q = mcΔT",
@@ -183,7 +183,7 @@ export const TOPICS: Topic[] = [
     name: "Acids, Bases and pH",
     subjectId: "chemistry",
     description: "pH and pOH calculations, hydrogen ion concentration [H⁺], hydroxide ion concentration [OH⁻], and ionic product of water.",
-    icon: "💧",
+    icon: "pH",
     concepts: [
       "pH definition: pH = -log₁₀[H⁺]",
       "Hydrogen ion concentration: [H⁺] = 10^(-pH)",
@@ -201,7 +201,7 @@ export const TOPICS: Topic[] = [
     name: "Electrical and Power Engineering",
     subjectId: "engineering",
     description: "Ohm's law, electrical power dissipation (P = VI = I²R = V²/R), circuit current, and power efficiency.",
-    icon: "⚡",
+    icon: "ELEC",
     concepts: [
       "Ohm's Law: V = IR",
       "Electrical power formulas: P = VI, P = I²R, P = V² / R",
@@ -216,7 +216,7 @@ export const TOPICS: Topic[] = [
     name: "Materials, Stress and Strain",
     subjectId: "engineering",
     description: "Direct tensile stress, tensile strain, Young's modulus of elasticity, shear stress, and factor of safety.",
-    icon: "🏗️",
+    icon: "MAT",
     concepts: [
       "Direct tensile stress: σ = F / A",
       "Direct tensile strain: ε = ΔL / L",
@@ -235,7 +235,7 @@ export const TOPICS: Topic[] = [
     name: "Number Systems and Data",
     subjectId: "computer-science",
     description: "Decimal, binary, and hexadecimal number conversions, bit storage capacity, and network bandwidth data rates.",
-    icon: "💻",
+    icon: "DATA",
     concepts: [
       "Base 2 (Binary), Base 10 (Decimal), Base 16 (Hexadecimal) conversion",
       "Storage units: bits, bytes, KB, MB, GB",
@@ -257,9 +257,6 @@ function normalizeTopicKey(str: string): string {
     .replace(/\s+/g, "-");
 }
 
-/**
- * Normalizes a topic string or slug into a standard Topic object.
- */
 export function getTopicByIdOrSlug(idOrSlug: string): Topic | undefined {
   const normKey = normalizeTopicKey(idOrSlug);
   return TOPICS.find(
@@ -273,16 +270,10 @@ export function getTopicByIdOrSlug(idOrSlug: string): Topic | undefined {
   );
 }
 
-/**
- * Returns all registered topics.
- */
 export function getAllTopics(): Topic[] {
   return TOPICS;
 }
 
-/**
- * Returns topics belonging to a specific subject.
- */
 export function getTopicsBySubject(subjectId: SubjectId): Topic[] {
   return TOPICS.filter((t) => t.subjectId === subjectId);
 }

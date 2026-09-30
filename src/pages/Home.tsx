@@ -33,7 +33,7 @@ export function Home() {
   return (
     <main className="home-page">
       <SEO
-        title="STEMCalculate | Free Step-by-Step STEM Solvers & Formula Library"
+        title="STEMCalculate | Step-by-Step STEM Solvers & Formula Library"
         description="Comprehensive STEM calculation platform with step-by-step solvers for Physics, Mathematics, Chemistry, and Engineering. Universal SUVAT solver, formula finder, and exam calculators."
         canonicalPath="/"
         keywords={[
@@ -63,9 +63,9 @@ export function Home() {
 
       {/* HERO SECTION */}
       <section className="hero">
-        <p className="eyebrow">UNIVERSAL STEM CALCULATION PLATFORM</p>
+        <p className="eyebrow">STEM CALCULATION PLATFORM</p>
 
-        <h1>General STEM Solvers & Formula Library</h1>
+        <h1>General STEM Solvers &amp; Formula Library</h1>
 
         <p className="hero-description">
           Step-by-step calculations and reference formulas for Physics, Mathematics,
@@ -73,13 +73,30 @@ export function Home() {
         </p>
 
         {/* Global Search Bar in Hero */}
-        <div className="hero-search-container" onClick={() => setIsSearchOpen(true)}>
-          <span className="hero-search-icon">🔍</span>
+        <div
+          className="hero-search-container"
+          onClick={() => setIsSearchOpen(true)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setIsSearchOpen(true);
+            }
+          }}
+          aria-label="Search all calculators and formulas"
+        >
+          <span className="hero-search-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </span>
           <input
             type="text"
             readOnly
             className="hero-search-input"
-            placeholder="Search all 100+ calculators, topics, formulas (e.g. SUVAT, quadratic, momentum)..."
+            placeholder="Search calculators, topics, equations (e.g. SUVAT, quadratic, momentum)..."
           />
           <kbd className="hero-search-kbd">⌘K</kbd>
         </div>
@@ -89,7 +106,7 @@ export function Home() {
             Browse All {totalCalculators} Formulas
           </Link>
           <Link to="/calculators" className="secondary-button">
-            Open Interactive Solvers
+            Interactive Solvers
           </Link>
           <Link to="/formula-finder" className="secondary-button">
             Formula Finder
@@ -98,12 +115,12 @@ export function Home() {
       </section>
 
       {/* CORE PLATFORM FEATURES */}
-      <section className="feature-section" aria-label="Key features">
+      <section className="feature-section" aria-label="Key platform features">
         <Link to="/formulas" className="feature">
           <span>01</span>
           <h2>Formula Library</h2>
           <p>
-            Browse {totalCalculators} formulas organised by subject and topic with full LaTeX equations and notes.
+            Browse {totalCalculators} formulas organised by subject and topic with full LaTeX equations and working.
           </p>
         </Link>
 
@@ -124,11 +141,11 @@ export function Home() {
         </Link>
       </section>
 
-      {/* BROWSE BY TOPIC SECTION (DYNAMIC & SCALABLE) */}
+      {/* BROWSE BY TOPIC SECTION */}
       <section className="topics-section">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">TOPIC REFERENCE</p>
+            <p className="eyebrow">TOPIC DIRECTORY</p>
             <h2>Browse by Topic</h2>
           </div>
 
@@ -138,7 +155,7 @@ export function Home() {
         </div>
 
         {/* Subject Filter Pills */}
-        <div className="subject-filter-bar">
+        <div className="subject-filter-bar" role="group" aria-label="Filter topics by subject">
           <button
             type="button"
             className={`subject-pill ${selectedSubject === "all" ? "active" : ""}`}
@@ -155,7 +172,7 @@ export function Home() {
                 className={`subject-pill ${selectedSubject === sub.id ? "active" : ""}`}
                 onClick={() => setSelectedSubject(sub.id)}
               >
-                <span className="pill-icon">{sub.icon}</span> {sub.name} ({count})
+                <span className="pill-code-tag">{sub.icon}</span> {sub.name} ({count})
               </button>
             );
           })}
@@ -175,7 +192,7 @@ export function Home() {
                 <span className="topic-number">{numStr}</span>
                 <div className="topic-card-content">
                   <div className="topic-card-title-row">
-                    <span className="topic-icon">{topic.icon}</span>
+                    <span className="topic-code-badge">{topic.icon}</span>
                     <h3>{topic.name}</h3>
                   </div>
                   <p>{topic.description}</p>
@@ -186,7 +203,7 @@ export function Home() {
                     <span className="topic-subject-tag">{topic.subjectId.toUpperCase()}</span>
                   </div>
                 </div>
-                <span className="topic-arrow">&rarr;</span>
+                <span className="topic-arrow" aria-hidden="true">&rarr;</span>
               </Link>
             );
           })}
@@ -197,8 +214,8 @@ export function Home() {
       <section className="featured-solvers-section">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">FEATURED TOOLS</p>
-            <h2>Master Interactive Studios</h2>
+            <p className="eyebrow">MULTI-VARIABLE TOOLS</p>
+            <h2>Interactive Calculation Studios</h2>
           </div>
 
           <Link to="/calculators" className="text-button">
@@ -208,46 +225,46 @@ export function Home() {
 
         <div className="featured-tools-grid">
           <div className="featured-tool-card">
-            <div className="tool-card-icon">🚀</div>
+            <div className="tool-card-badge">KINEMATICS</div>
             <h3>Universal SUVAT Solver</h3>
             <p>
-              Enter <strong>any 3</strong> known kinematic values and instantly solve the remaining 2 with full step-by-step working.
+              Enter <strong>any 3</strong> known kinematic values and instantly solve the remaining 2 with complete step-by-step working.
             </p>
             <Link to="/calculators" className="tool-card-btn">
-              Launch SUVAT Solver &rarr;
+              Open SUVAT Solver &rarr;
             </Link>
           </div>
 
           <div className="featured-tool-card">
-            <div className="tool-card-icon">⚛️</div>
-            <h3>Quantum & Photon Converter</h3>
+            <div className="tool-card-badge">QUANTUM</div>
+            <h3>Quantum &amp; Photon Converter</h3>
             <p>
               Interchange wavelength (&lambda;), frequency (f), energy in Joules (J), and electron-volts (eV) seamlessly.
             </p>
             <Link to="/calculators" className="tool-card-btn">
-              Launch Quantum Studio &rarr;
+              Open Quantum Studio &rarr;
             </Link>
           </div>
 
           <div className="featured-tool-card">
-            <div className="tool-card-icon">⚡</div>
+            <div className="tool-card-badge">CIRCUITS</div>
             <h3>Potential Divider Studio</h3>
             <p>
               Analyze series resistor circuits, calculate output voltage <MathView text="$V_{out}$" />, current, and component power dissipation.
             </p>
             <Link to="/calculators" className="tool-card-btn">
-              Launch Circuit Studio &rarr;
+              Open Circuit Studio &rarr;
             </Link>
           </div>
 
           <div className="featured-tool-card">
-            <div className="tool-card-icon">🔢</div>
+            <div className="tool-card-badge">ALGEBRA</div>
             <h3>Quadratic Equation Solver</h3>
             <p>
               Calculate real and complex roots of <MathView text="$ax^2 + bx + c = 0$" /> with discriminant analysis and step-by-step working.
             </p>
             <Link to="/formulas/quadratic-formula" className="tool-card-btn">
-              Launch Quadratic Solver &rarr;
+              Open Quadratic Solver &rarr;
             </Link>
           </div>
         </div>

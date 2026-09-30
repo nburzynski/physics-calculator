@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { formulas } from "../data/formulas";
-import { calculateFormula, formatPhysicsNumber } from "../utils/calculator";
+import { formatPhysicsNumber } from "../utils/calculator";
 import { STEM_CONSTANTS } from "../utils/constants";
 import MathView from "../components/MathView";
 import WorkingSteps from "../components/WorkingSteps";
 import SEO from "../components/SEO";
+import FormulaCalculator from "../components/FormulaCalculator";
 
 export default function Calculators() {
   const [activeTab, setActiveTab] = useState<"suvat" | "photon" | "divider" | "quick">("suvat");
@@ -42,7 +43,7 @@ export default function Calculators() {
     if (knownCount !== 3) {
       setSuvatResult({
         solved: [],
-        error: `Please provide exactly 3 known values (you currently entered ${knownCount}). Leave the 2 you want to find blank.`,
+        error: `Please provide exactly 3 known values (currently entered ${knownCount}). Leave the 2 you want to find blank.`,
       });
       return;
     }
@@ -361,7 +362,7 @@ export default function Calculators() {
   // TAB 2: QUANTUM & PHOTON CONVERTER
   // ==========================================
   const [photonInputType, setPhotonInputType] = useState<"wavelength" | "frequency" | "joules" | "ev">("wavelength");
-  const [photonInputValue, setPhotonInputValue] = useState("500"); // 500 nm default
+  const [photonInputValue, setPhotonInputValue] = useState("500");
   const [photonWavelengthUnit, setPhotonWavelengthUnit] = useState<"m" | "nm">("nm");
 
   const photonResult = (() => {
@@ -433,109 +434,75 @@ export default function Calculators() {
   })();
 
   // ==========================================
-  // TAB 4: IN-PAGE QUICK FORMULA RUNNER
+  // TAB 4: QUICK FORMULA RUNNER
   // ==========================================
   const [quickFormulaId, setQuickFormulaId] = useState("suvat-velocity");
-  const [quickValues, setQuickValues] = useState<Record<string, string>>({
-    "initial-velocity": "5",
-    "acceleration": "2",
-    "time": "4",
-    "final-velocity": "",
-  });
-  const [quickResult, setQuickResult] = useState<string>("");
-  const [quickWorking, setQuickWorking] = useState<string[]>([]);
-  const [quickError, setQuickError] = useState<string>("");
-
   const activeQuickFormula = formulas.find((f) => f.id === quickFormulaId) ?? formulas[0];
-
-  const handleQuickFormulaSelect = (id: string) => {
-    setQuickFormulaId(id);
-    const target = formulas.find((f) => f.id === id);
-    if (target) {
-      const init: Record<string, string> = {};
-      target.variables.forEach((v, idx) => {
-        if (v.defaultValue) init[v.id] = v.defaultValue;
-        else if (idx === 0) init[v.id] = "";
-        else init[v.id] = "10";
-      });
-      setQuickValues(init);
-      setQuickResult("");
-      setQuickWorking([]);
-      setQuickError("");
-    }
-  };
-
-  const handleQuickCalculate = () => {
-    setQuickError("");
-    const outcome = calculateFormula(activeQuickFormula, quickValues);
-    if (!outcome.success) {
-      setQuickError(outcome.error);
-      setQuickResult("");
-      setQuickWorking([]);
-      return;
-    }
-    const unitStr = outcome.unit ? ` ${outcome.unit}` : "";
-    setQuickResult(`${outcome.variableSymbol} = ${outcome.formattedAnswer}${unitStr}`);
-    setQuickWorking(outcome.steps);
-  };
 
   return (
     <main className="calculators-page">
       <SEO
-        title="Interactive A-Level Physics Calculators | Universal SUVAT & Exam Solvers"
-        description="Master exam solvers for OCR A-Level Physics: Universal SUVAT 5-variable solver, Photon & Quantum converter, Circuit Potential Divider studio, and 92 in-page calculators."
+        title="Interactive STEM &amp; Physics Calculators | Multi-Variable Solvers"
+        description="Multi-variable calculation studios for Physics and STEM: Universal SUVAT 5-variable solver, Photon and Quantum converter, Circuit Potential Divider studio, and interactive formula solver."
         canonicalPath="/calculators"
         keywords={[
           "SUVAT solver all 5 variables",
-          "A level physics calculator",
+          "physics calculator",
           "photon energy eV converter",
           "potential divider calculator",
-          "OCR physics solvers",
+          "STEM solvers",
         ]}
       />
 
       <section className="library-header">
-        <p className="eyebrow">SOLVER SUITE</p>
-        <h1>Interactive Physics Calculators</h1>
+        <p className="eyebrow">CALCULATION STUDIOS</p>
+        <h1>Interactive STEM Calculators</h1>
         <p>
-          Dedicated multi-step solvers designed for A-Level physics homework and
-          exam revision. Calculate multi-variable systems with complete step-by-step
-          working directly on this page.
+          Multi-variable solvers and calculation studios for STEM homework, laboratory analysis,
+          and revision. Calculate complex multi-variable systems with complete step-by-step working.
         </p>
       </section>
 
       {/* Navigation Tabs */}
-      <div className="solver-tabs">
+      <div className="solver-tabs" role="tablist" aria-label="Calculation studio selection">
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === "suvat"}
           className={`solver-tab ${activeTab === "suvat" ? "active" : ""}`}
           onClick={() => setActiveTab("suvat")}
         >
-          🚀 Universal SUVAT Solver
+          Universal SUVAT Solver
         </button>
 
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === "photon"}
           className={`solver-tab ${activeTab === "photon" ? "active" : ""}`}
           onClick={() => setActiveTab("photon")}
         >
-          ⚛️ Quantum & Photon Studio
+          Quantum &amp; Photon Studio
         </button>
 
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === "divider"}
           className={`solver-tab ${activeTab === "divider" ? "active" : ""}`}
           onClick={() => setActiveTab("divider")}
         >
-          ⚡ Potential Divider Studio
+          Potential Divider Studio
         </button>
 
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === "quick"}
           className={`solver-tab ${activeTab === "quick" ? "active" : ""}`}
           onClick={() => setActiveTab("quick")}
         >
-          📋 Quick Formula Runner (92)
+          Formula Quick Runner
         </button>
       </div>
 
@@ -547,8 +514,8 @@ export default function Calculators() {
           <div className="panel-header">
             <h2>Universal SUVAT 5-Variable Solver</h2>
             <p>
-              In A-Level mechanics, you are given <strong>any 3</strong> variables
-              and must find the remaining 2. Enter any 3 values below and leave 2 blank.
+              In kinematics, given <strong>any 3</strong> quantities, the remaining 2 are uniquely determined.
+              Enter any 3 values below and leave the 2 you want to find blank.
             </p>
           </div>
 
@@ -629,29 +596,29 @@ export default function Calculators() {
             </div>
           </div>
 
-          <div className="calculator-actions">
-            <button type="button" className="calculate-button" onClick={handleSuvatSolve}>
-              Solve Both Unknowns →
+          <div className="calculator-actions-bar">
+            <button type="button" className="calc-submit-btn" onClick={handleSuvatSolve}>
+              Solve Unknown Quantities →
             </button>
             <button
               type="button"
-              className="clear-button"
+              className="calc-clear-btn"
               onClick={() => {
                 setSuvatInputs({ s: "", u: "", v: "", a: "", t: "" });
                 setSuvatResult(null);
               }}
             >
-              Clear
+              Clear Inputs
             </button>
           </div>
 
           {suvatResult?.error && (
-            <div className="calculator-error">{suvatResult.error}</div>
+            <div className="calculator-error-bar">{suvatResult.error}</div>
           )}
 
           {suvatResult && suvatResult.solved.length > 0 && (
             <div className="suvat-results-container">
-              <p className="eyebrow">SOLVED VALUES & WORKING</p>
+              <p className="eyebrow">SOLVED VALUES &amp; WORKING</p>
               <div className="suvat-solved-cards">
                 {suvatResult.solved.map((item) => (
                   <div key={item.symbol} className="solved-card">
@@ -677,17 +644,16 @@ export default function Calculators() {
       {activeTab === "photon" && (
         <section className="solver-panel">
           <div className="panel-header">
-            <h2>Quantum & Photon Energy Converter</h2>
+            <h2>Quantum &amp; Photon Energy Converter</h2>
             <p>
-              In OCR A-Level quantum physics, wavelength, frequency, energy in Joules,
-              and energy in electron-volts (eV) are interchangeable. Enter
-              <strong> any one</strong> value to instantly solve the others.
+              Wavelength, frequency, energy in Joules, and energy in electron-volts (eV) are interchangeable.
+              Enter <strong>any one</strong> quantity to solve the remaining values.
             </p>
           </div>
 
           <div className="photon-input-box">
             <div className="photon-select-row">
-              <label htmlFor="photon-type">Input Type:</label>
+              <label htmlFor="photon-type">Input Quantity:</label>
               <select
                 id="photon-type"
                 className="finder-select"
@@ -740,13 +706,13 @@ export default function Calculators() {
               <div className="photon-card">
                 <span className="photon-card-label">ENERGY (JOULES)</span>
                 <h3>{formatPhysicsNumber(photonResult.energyJ)} J</h3>
-                <p>Formula: E = hf = hc/λ</p>
+                <p>E = hf = hc / λ</p>
               </div>
 
               <div className="photon-card">
                 <span className="photon-card-label">ENERGY (ELECTRON-VOLTS)</span>
                 <h3>{formatPhysicsNumber(photonResult.energyEv)} eV</h3>
-                <p>Conversion: ÷ 1.60 × 10⁻¹⁹ J/eV</p>
+                <p>1 eV = 1.60 × 10⁻¹⁹ J</p>
               </div>
             </div>
           )}
@@ -759,10 +725,10 @@ export default function Calculators() {
       {activeTab === "divider" && (
         <section className="solver-panel">
           <div className="panel-header">
-            <h2>Potential Divider & Circuit Studio</h2>
+            <h2>Potential Divider &amp; Circuit Studio</h2>
             <p>
-              Analyze two resistors in series across a supply voltage <MathView text="$V_{in}$" />.
-              Calculate output voltage <MathView text="$V_{out}$" />, resistor voltages, circuit current,
+              Analyze series resistor circuits across a supply voltage <MathView text="$V_{in}$" />.
+              Calculate output voltage <MathView text="$V_{out}$" />, component voltage drops, circuit current,
               and power dissipation.
             </p>
           </div>
@@ -798,7 +764,7 @@ export default function Calculators() {
 
             <div className="suvat-field">
               <label htmlFor="div-r2">
-                Resistor <MathView text="$R_2$" /> across output (Ω)
+                Resistor <MathView text="$R_2$" /> (Ω)
               </label>
               <input
                 id="div-r2"
@@ -813,19 +779,21 @@ export default function Calculators() {
 
           {dividerResult && (
             <div className="divider-results">
-              <div className="divider-card highlight-box">
-                <span className="eyebrow">OUTPUT VOLTAGE</span>
-                <h2>Vout = {formatPhysicsNumber(dividerResult.vOut)} V</h2>
-                <p>Across Resistor R₂ ({r2} Ω)</p>
+              <div className="divider-primary-card">
+                <span className="divider-label">OUTPUT VOLTAGE ACROSS R₂ (V_OUT)</span>
+                <h3>{formatPhysicsNumber(dividerResult.vOut)} V</h3>
+                <p>
+                  Formula: V_out = [R₂ / (R₁ + R₂)] × V_in = [{r2} / ({r1} + {r2})] × {vin}
+                </p>
               </div>
 
               <div className="divider-details-grid">
                 <div className="detail-box">
-                  <span className="detail-label">Voltage across R₁:</span>
+                  <span className="detail-label">Voltage Drop across R₁:</span>
                   <strong>{formatPhysicsNumber(dividerResult.v1)} V</strong>
                 </div>
                 <div className="detail-box">
-                  <span className="detail-label">Total Resistance:</span>
+                  <span className="detail-label">Total Circuit Resistance:</span>
                   <strong>{formatPhysicsNumber(dividerResult.totalR)} Ω</strong>
                 </div>
                 <div className="detail-box">
@@ -841,7 +809,7 @@ export default function Calculators() {
                   <strong>{formatPhysicsNumber(dividerResult.power2)} W</strong>
                 </div>
                 <div className="detail-box">
-                  <span className="detail-label">Total Power:</span>
+                  <span className="detail-label">Total Power Dissipation:</span>
                   <strong>{formatPhysicsNumber(dividerResult.totalPower)} W</strong>
                 </div>
               </div>
@@ -851,24 +819,24 @@ export default function Calculators() {
       )}
 
       {/* ======================================================== */}
-      {/* TAB 4: IN-PAGE QUICK FORMULA RUNNER */}
+      {/* TAB 4: FORMULA QUICK RUNNER */}
       {/* ======================================================== */}
       {activeTab === "quick" && (
         <section className="solver-panel">
           <div className="panel-header">
-            <h2>Quick In-Page Formula Runner</h2>
+            <h2>Formula Quick Runner</h2>
             <p>
-              Select any formula in the library to calculate right here with full step-by-step working.
+              Select any formula from the library to calculate directly with integrated mathematical inputs and step-by-step working.
             </p>
           </div>
 
-          <div className="finder-control-group" style={{ maxWidth: "600px" }}>
+          <div className="finder-control-group" style={{ maxWidth: "600px", marginBottom: "24px" }}>
             <label htmlFor="quick-formula-select">Choose formula:</label>
             <select
               id="quick-formula-select"
               className="finder-select"
               value={quickFormulaId}
-              onChange={(e) => handleQuickFormulaSelect(e.target.value)}
+              onChange={(e) => setQuickFormulaId(e.target.value)}
             >
               {formulas.map((f) => (
                 <option key={f.id} value={f.id}>
@@ -878,76 +846,7 @@ export default function Calculators() {
             </select>
           </div>
 
-          <div style={{ margin: "20px 0" }}>
-            <MathView math={activeQuickFormula.equation} block={true} />
-          </div>
-
-          <div className="calculator-form">
-            {activeQuickFormula.variables.map((v) => (
-              <div className="calculator-var-row" key={v.id}>
-                <div className="var-info">
-                  <span className="var-symbol">
-                    <MathView text={v.symbol} />
-                  </span>
-                  <span className="var-name">
-                    {v.name}
-                    {v.isConstant && <span className="var-constant-tag">CONSTANT</span>}
-                  </span>
-                </div>
-                <div className="var-input-container">
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    className="var-input"
-                    value={quickValues[v.id] ?? ""}
-                    onChange={(e) =>
-                      setQuickValues({ ...quickValues, [v.id]: e.target.value })
-                    }
-                    placeholder="Leave blank to solve"
-                  />
-                  {v.unit && (
-                    <span className="var-unit">
-                      <MathView text={v.unit} />
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="calculator-actions">
-            <button type="button" className="calculate-button" onClick={handleQuickCalculate}>
-              Calculate →
-            </button>
-            <button
-              type="button"
-              className="clear-button"
-              onClick={() => {
-                const init: Record<string, string> = {};
-                activeQuickFormula.variables.forEach((v) => {
-                  if (v.defaultValue) init[v.id] = v.defaultValue;
-                });
-                setQuickValues(init);
-                setQuickResult("");
-                setQuickWorking([]);
-                setQuickError("");
-              }}
-            >
-              Clear
-            </button>
-          </div>
-
-          {quickError && <div className="calculator-error">{quickError}</div>}
-
-          {quickResult && (
-            <div className="calculation-result">
-              <p className="eyebrow">RESULT</p>
-              <h2>{quickResult}</h2>
-              {quickWorking.length > 0 && (
-                <WorkingSteps steps={quickWorking} title="Step-by-Step Working" />
-              )}
-            </div>
-          )}
+          <FormulaCalculator formula={activeQuickFormula} />
         </section>
       )}
     </main>

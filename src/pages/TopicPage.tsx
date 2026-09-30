@@ -38,7 +38,7 @@ export function TopicPage() {
     <main className="topic-landing-page">
       <SEO
         title={`${topic.name} Calculators & Formulas`}
-        description={`Explore all ${topicFormulas.length} ${topic.name} calculators and formulas for ${subject?.name || "STEM"}. Step-by-step mathematical working, key equations, and reference guides.`}
+        description={`Explore all ${topicFormulas.length} ${topic.name} calculators and equations for ${subject?.name || "STEM"}. Step-by-step mathematical working, key equations, and topic reference.`}
         canonicalPath={`/topics/${topic.slug}`}
         keywords={[
           topic.name,
@@ -65,7 +65,7 @@ export function TopicPage() {
           </div>
 
           <div className="topic-title-row">
-            <span className="topic-hero-icon">{topic.icon}</span>
+            <span className="topic-code-badge large">{topic.icon}</span>
             <h1>{topic.name}</h1>
           </div>
 
@@ -76,14 +76,14 @@ export function TopicPage() {
         {topic.concepts && topic.concepts.length > 0 && (
           <section className="topic-concepts-card">
             <div className="concepts-header">
-              <span className="concepts-icon">💡</span>
-              <h2>Key Concepts in {topic.name}</h2>
+              <span className="concepts-badge">THEORY</span>
+              <h2>Key Principles &amp; Concepts</h2>
             </div>
 
             <ul className="concepts-list">
               {topic.concepts.map((concept, index) => (
                 <li key={index} className="concept-item">
-                  <span className="concept-bullet">&bull;</span>
+                  <span className="concept-bullet" aria-hidden="true">&bull;</span>
                   <span>{concept}</span>
                 </li>
               ))}
@@ -94,7 +94,7 @@ export function TopicPage() {
         {/* Calculators in this Topic */}
         <section className="topic-calculators-section">
           <div className="library-section-heading">
-            <span>CALCULATORS & FORMULAS ({topicFormulas.length})</span>
+            <span>CALCULATORS &amp; FORMULAS ({topicFormulas.length})</span>
             <span>{subject?.name.toUpperCase()}</span>
           </div>
 
@@ -110,8 +110,8 @@ export function TopicPage() {
           <section className="topic-equations-cheatsheet">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">QUICK REFERENCE</p>
-                <h2>Key Equations Sheet</h2>
+                <p className="eyebrow">EQUATION REFERENCE</p>
+                <h2>Topic Formula Sheet</h2>
               </div>
             </div>
 
@@ -136,8 +136,8 @@ export function TopicPage() {
           <section className="related-topics-section">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">EXPLORE MORE</p>
-                <h2>Related Topics</h2>
+                <p className="eyebrow">RELATED TOPICS</p>
+                <h2>Connected Subject Areas</h2>
               </div>
             </div>
 
@@ -149,12 +149,12 @@ export function TopicPage() {
                   className="related-topic-card"
                   style={{ textDecoration: "none" }}
                 >
-                  <span className="rel-icon">{rel.icon}</span>
+                  <span className="rel-code-tag">{rel.icon}</span>
                   <div className="rel-info">
                     <h4>{rel.name}</h4>
                     <p>{rel.description}</p>
                   </div>
-                  <span className="rel-arrow">&rarr;</span>
+                  <span className="rel-arrow" aria-hidden="true">&rarr;</span>
                 </Link>
               ))}
             </div>
