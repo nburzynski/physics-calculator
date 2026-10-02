@@ -16,7 +16,7 @@ const physicsFormulas: Formula[] = [
     calculatorType: "custom",
 
     variables: [
-      { id: "horizontal-component", symbol: "Fx", name: "Horizontal component", unit: "" },
+      { id: "horizontal-component", symbol: "Fx", name: "Horizontal component", unit: "N" },
       { id: "force", symbol: "F", name: "Vector magnitude", unit: "N" },
       { id: "angle", symbol: "θ", name: "Angle", unit: "°" },
     ],
@@ -33,7 +33,7 @@ const physicsFormulas: Formula[] = [
     calculatorType: "custom",
 
     variables: [
-      { id: "vertical-component", symbol: "Fy", name: "Vertical component", unit: "" },
+      { id: "vertical-component", symbol: "Fy", name: "Vertical component", unit: "N" },
       { id: "force", symbol: "F", name: "Vector magnitude", unit: "N" },
       { id: "angle", symbol: "θ", name: "Angle", unit: "°" },
     ],
@@ -467,16 +467,16 @@ const physicsFormulas: Formula[] = [
   {
     id: "electrical-energy-charge",
     name: "Electrical Energy",
-    equation: "W = EQ",
+    equation: "W = \\mathcal{E}Q",
     topic: "Electrons, Waves and Photons",
     description:
-      "Calculates work done from electric field strength and charge.",
+      "Calculates work done or energy transferred using electromotive force (e.m.f.) and charge.",
 
     calculatorType: "multiply",
 
     variables: [
-      { id: "work", symbol: "W", name: "Work done", unit: "J" },
-      { id: "electric-field", symbol: "E", name: "Electric field strength", unit: "V/m" },
+      { id: "work", symbol: "W", name: "Work done / Energy", unit: "J" },
+      { id: "emf", symbol: "ℰ", name: "Electromotive force (e.m.f.)", unit: "V" },
       { id: "charge", symbol: "Q", name: "Charge", unit: "C" },
     ],
   },
@@ -939,7 +939,7 @@ const physicsFormulas: Formula[] = [
       { id: "pressure", symbol: "p", name: "Pressure", unit: "Pa" },
       { id: "volume", symbol: "V", name: "Volume", unit: "m³" },
       { id: "moles", symbol: "n", name: "Amount of gas", unit: "mol" },
-      { id: "gas-constant", symbol: "R", name: "Molar gas constant", unit: "J/mol K" },
+      { id: "gas-constant", symbol: "R", name: "Molar gas constant", unit: "J/mol K", defaultValue: "8.31", isConstant: true },
       { id: "temperature", symbol: "T", name: "Temperature", unit: "K" },
     ],
   },
@@ -1224,7 +1224,7 @@ const physicsFormulas: Formula[] = [
     variables: [
       { id: "luminosity", symbol: "L", name: "Luminosity", unit: "W" },
       { id: "radius", symbol: "r", name: "Radius", unit: "m" },
-      { id: "stefan-constant", symbol: "σ", name: "Stefan constant", unit: "W/m² K⁴" },
+      { id: "stefan-constant", symbol: "σ", name: "Stefan constant", unit: "W/m² K⁴", defaultValue: "5.67e-8", isConstant: true },
       { id: "temperature", symbol: "T", name: "Temperature", unit: "K" },
     ],
   },

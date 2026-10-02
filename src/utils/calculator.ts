@@ -1920,9 +1920,26 @@ export function calculateFormula(
   // STEM PLATFORM STARTER SOLVERS
   // ============================================================
   if (formula.id === "quadratic-formula") {
+    const x = val("root");
     const a = val("a");
     const b = val("b");
     const c = val("c");
+
+    if (missing === "a") {
+      if (x === 0) return { success: false, error: "Root x cannot be zero to determine coefficient a." };
+      const ans = -(b * x + c) / (x * x);
+      return makeSteps(eq, symbol, unit, "a = -(bx + c) ÷ x²", `a = -(${fNum(b)} × ${fNum(x)} + ${fNum(c)}) ÷ (${fNum(x)})²`, ans);
+    }
+    if (missing === "b") {
+      if (x === 0) return { success: false, error: "Root x cannot be zero to determine coefficient b." };
+      const ans = -(a * x * x + c) / x;
+      return makeSteps(eq, symbol, unit, "b = -(ax² + c) ÷ x", `b = -(${fNum(a)} × (${fNum(x)})² + ${fNum(c)}) ÷ ${fNum(x)}`, ans);
+    }
+    if (missing === "c") {
+      const ans = -(a * x * x + b * x);
+      return makeSteps(eq, symbol, unit, "c = -(ax² + bx)", `c = -(${fNum(a)} × (${fNum(x)})² + ${fNum(b)} × ${fNum(x)})`, ans);
+    }
+
     if (a === 0) return { success: false, error: "Coefficient 'a' cannot be zero for a quadratic equation (must be non-zero)." };
     const disc = b * b - 4 * a * c;
 
@@ -1998,30 +2015,53 @@ export function calculateFormula(
   }
 
   if (formula.id === "vector-2d-dot-product") {
+    const dot = val("dot");
     const ax = val("ax");
     const ay = val("ay");
     const bx = val("bx");
     const by = val("by");
-    const dot = ax * bx + ay * by;
+
+    if (missing === "ax") {
+      if (bx === 0) return { success: false, error: "bx cannot be zero." };
+      const ans = (dot - ay * by) / bx;
+      return makeSteps(eq, symbol, unit, "a_x = (\\mathbf{a}\\cdot\\mathbf{b} - a_y b_y) ÷ b_x", `a_x = (${fNum(dot)} - ${fNum(ay)} × ${fNum(by)}) ÷ ${fNum(bx)}`, ans);
+    }
+    if (missing === "ay") {
+      if (by === 0) return { success: false, error: "by cannot be zero." };
+      const ans = (dot - ax * bx) / by;
+      return makeSteps(eq, symbol, unit, "a_y = (\\mathbf{a}\\cdot\\mathbf{b} - a_x b_x) ÷ b_y", `a_y = (${fNum(dot)} - ${fNum(ax)} × ${fNum(bx)}) ÷ ${fNum(by)}`, ans);
+    }
+    if (missing === "bx") {
+      if (ax === 0) return { success: false, error: "ax cannot be zero." };
+      const ans = (dot - ay * by) / ax;
+      return makeSteps(eq, symbol, unit, "b_x = (\\mathbf{a}\\cdot\\mathbf{b} - a_y b_y) ÷ a_x", `b_x = (${fNum(dot)} - ${fNum(ay)} × ${fNum(by)}) ÷ ${fNum(ax)}`, ans);
+    }
+    if (missing === "by") {
+      if (ay === 0) return { success: false, error: "ay cannot be zero." };
+      const ans = (dot - ax * bx) / ay;
+      return makeSteps(eq, symbol, unit, "b_y = (\\mathbf{a}\\cdot\\mathbf{b} - a_x b_x) ÷ a_y", `b_y = (${fNum(dot)} - ${fNum(ax)} × ${fNum(bx)}) ÷ ${fNum(ay)}`, ans);
+    }
+
+    const dotCalc = ax * bx + ay * by;
     const magA = Math.sqrt(ax * ax + ay * ay);
     const magB = Math.sqrt(bx * bx + by * by);
     let angleStr = "";
     if (magA > 0 && magB > 0) {
-      const cosTheta = Math.max(-1, Math.min(1, dot / (magA * magB)));
+      const cosTheta = Math.max(-1, Math.min(1, dotCalc / (magA * magB)));
       const thetaDeg = (Math.acos(cosTheta) * 180) / Math.PI;
       angleStr = ` (Angle \\theta = ${fNum(thetaDeg)}^\\circ)`;
     }
     return {
       success: true,
-      answer: dot,
-      formattedAnswer: `${fNum(dot)}${angleStr}`,
+      answer: dotCalc,
+      formattedAnswer: `${fNum(dotCalc)}${angleStr}`,
       variableSymbol: "a · b",
       unit: "",
       steps: [
         `1. Formula: ${eq}`,
         `2. Substitute: \\mathbf{a} \\cdot \\mathbf{b} = (${fNum(ax)})(${fNum(bx)}) + (${fNum(ay)})(${fNum(by)})`,
         `3. Magnitudes: |\\mathbf{a}| = ${fNum(magA)}, \\quad |\\mathbf{b}| = ${fNum(magB)}`,
-        `4. Answer: \\mathbf{a} \\cdot \\mathbf{b} = ${fNum(dot)}${angleStr}`,
+        `4. Answer: \\mathbf{a} \\cdot \\mathbf{b} = ${fNum(dotCalc)}${angleStr}`,
       ],
     };
   }
