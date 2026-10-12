@@ -350,7 +350,7 @@ export default function FormulaFinder() {
                 </div>
 
                 <Link
-                  to={`/formulas/${formula.id}`}
+                  to={`/formulas/${formula.id}#calculator`}
                   className={`finder-open-btn ${isSolvableNow ? "btn-solvable" : ""}`}
                 >
                   {isSolvableNow ? "Open & Calculate Now →" : "View Calculator →"}

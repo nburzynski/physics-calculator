@@ -96,10 +96,12 @@ export function FormulaPage() {
         </section>
 
         {/* INTEGRATED MATHEMATICAL FORMULA & CALCULATOR */}
-        <FormulaCalculator formula={formula} />
+        <div id={formula.id} className="formula-calculator-anchor-wrap">
+          <FormulaCalculator formula={formula} />
+        </div>
 
         {/* WORKED EXAMPLE SECTION */}
-        <section className="worked-example-section" aria-labelledby="worked-example-heading">
+        <section className="worked-example-section" id="worked-example" aria-labelledby="worked-example-heading">
           <div className="section-heading">
             <div>
               <p className="eyebrow">STEP-BY-STEP EXAMPLE</p>
@@ -155,7 +157,7 @@ export function FormulaPage() {
 
         {/* PHYSICAL PRINCIPLES & CONDITIONS */}
         {(formula.notes || formula.assumptions) && (
-          <section className="formula-notes-section">
+          <section className="formula-notes-section" id="notes">
             {formula.notes && formula.notes.length > 0 && (
               <div className="notes-box">
                 <h3>Calculation Notes &amp; Conditions</h3>
@@ -186,7 +188,7 @@ export function FormulaPage() {
 
         {/* RELATED CALCULATORS SECTION */}
         {related.length > 0 && (
-          <section className="related-calculators-section">
+          <section className="related-calculators-section" id="related-calculators">
             <div className="section-heading">
               <div>
                 <p className="eyebrow">INTERNAL REFERENCE</p>

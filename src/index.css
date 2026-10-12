@@ -2,12 +2,25 @@
   box-sizing: border-box;
 }
 
-html,
-body {
+:root {
+  --header-offset: 95px;
+}
+
+@media (max-width: 700px) {
+  :root {
+    --header-offset: 155px;
+  }
+}
+
+html {
   margin: 0;
   min-width: 320px;
+  scroll-padding-top: var(--header-offset);
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
+  min-width: 320px;
   font-family: Arial, Helvetica, sans-serif;
 }

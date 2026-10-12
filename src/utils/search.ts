@@ -86,7 +86,7 @@ export function getSearchCatalog(): SearchItem[] {
       type: "formula",
       title: f.name,
       subtitle: `${f.topic} • Variables: ${symbolList}`,
-      path: `/formulas/${f.id}`,
+      path: `/formulas/${f.id}#calculator`,
       equation: f.equation,
       subjectId: f.subjectId,
       topicId: f.topicId,

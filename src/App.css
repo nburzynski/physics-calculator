@@ -3521,3 +3521,15 @@
     padding: 20px 10px;
   }
 }
+
+/* SCROLL TARGETING & STICKY HEADER OFFSETS */
+#calculator,
+.interactive-calculator-card,
+.formula-calculator-anchor-wrap,
+.solver-panel,
+.worked-example-section,
+.formula-page-header,
+.formula-notes-section,
+.related-calculators-section {
+  scroll-margin-top: var(--header-offset, 95px);
+}

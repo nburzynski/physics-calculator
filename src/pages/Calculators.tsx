@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { formulas } from "../data/formulas";
 import { formatPhysicsNumber } from "../utils/calculator";
 import { STEM_CONSTANTS } from "../utils/constants";
@@ -7,8 +8,33 @@ import WorkingSteps from "../components/WorkingSteps";
 import SEO from "../components/SEO";
 import FormulaCalculator from "../components/FormulaCalculator";
 
+const VALID_TABS = ["suvat", "photon", "divider", "quick"] as const;
+type TabType = (typeof VALID_TABS)[number];
+
+function getTabFromLocation(hash: string, searchParam: string | null): TabType | null {
+  const cleanHash = hash.replace(/^#/, "");
+  if (VALID_TABS.includes(cleanHash as TabType)) {
+    return cleanHash as TabType;
+  }
+  if (searchParam && VALID_TABS.includes(searchParam as TabType)) {
+    return searchParam as TabType;
+  }
+  return null;
+}
+
 export default function Calculators() {
-  const [activeTab, setActiveTab] = useState<"suvat" | "photon" | "divider" | "quick">("suvat");
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const [tabState, setTabState] = useState<TabType>("suvat");
+  const tabFromUrl = getTabFromLocation(location.hash, searchParams.get("tab"));
+  const activeTab = tabFromUrl ?? tabState;
+
+  const handleTabChange = (tab: TabType) => {
+    setTabState(tab);
+    navigate(`/calculators#${tab}`, { replace: true });
+  };
 
   // ==========================================
   // TAB 1: UNIVERSAL SUVAT MASTER SOLVER
@@ -436,7 +462,13 @@ export default function Calculators() {
   // ==========================================
   // TAB 4: QUICK FORMULA RUNNER
   // ==========================================
-  const [quickFormulaId, setQuickFormulaId] = useState("suvat-velocity");
+  const formulaQueryParam = searchParams.get("formula");
+  const [selectedFormulaId, setSelectedFormulaId] = useState("suvat-velocity");
+  const quickFormulaId =
+    formulaQueryParam && formulas.some((f) => f.id === formulaQueryParam)
+      ? formulaQueryParam
+      : selectedFormulaId;
+
   const activeQuickFormula = formulas.find((f) => f.id === quickFormulaId) ?? formulas[0];
 
   return (
@@ -470,7 +502,7 @@ export default function Calculators() {
           role="tab"
           aria-selected={activeTab === "suvat"}
           className={`solver-tab ${activeTab === "suvat" ? "active" : ""}`}
-          onClick={() => setActiveTab("suvat")}
+          onClick={() => handleTabChange("suvat")}
         >
           Universal SUVAT Solver
         </button>
@@ -480,7 +512,7 @@ export default function Calculators() {
           role="tab"
           aria-selected={activeTab === "photon"}
           className={`solver-tab ${activeTab === "photon" ? "active" : ""}`}
-          onClick={() => setActiveTab("photon")}
+          onClick={() => handleTabChange("photon")}
         >
           Quantum &amp; Photon Studio
         </button>
@@ -490,7 +522,7 @@ export default function Calculators() {
           role="tab"
           aria-selected={activeTab === "divider"}
           className={`solver-tab ${activeTab === "divider" ? "active" : ""}`}
-          onClick={() => setActiveTab("divider")}
+          onClick={() => handleTabChange("divider")}
         >
           Potential Divider Studio
         </button>
@@ -500,7 +532,7 @@ export default function Calculators() {
           role="tab"
           aria-selected={activeTab === "quick"}
           className={`solver-tab ${activeTab === "quick" ? "active" : ""}`}
-          onClick={() => setActiveTab("quick")}
+          onClick={() => handleTabChange("quick")}
         >
           Formula Quick Runner
         </button>
@@ -510,7 +542,7 @@ export default function Calculators() {
       {/* TAB 1: SUVAT MASTER SOLVER */}
       {/* ======================================================== */}
       {activeTab === "suvat" && (
-        <section className="solver-panel">
+        <section className="solver-panel" id="suvat">
           <div className="panel-header">
             <h2>Universal SUVAT 5-Variable Solver</h2>
             <p>
@@ -642,7 +674,7 @@ export default function Calculators() {
       {/* TAB 2: QUANTUM & PHOTON CONVERTER */}
       {/* ======================================================== */}
       {activeTab === "photon" && (
-        <section className="solver-panel">
+        <section className="solver-panel" id="photon">
           <div className="panel-header">
             <h2>Quantum &amp; Photon Energy Converter</h2>
             <p>
@@ -723,7 +755,7 @@ export default function Calculators() {
       {/* TAB 3: POTENTIAL DIVIDER & CIRCUIT STUDIO */}
       {/* ======================================================== */}
       {activeTab === "divider" && (
-        <section className="solver-panel">
+        <section className="solver-panel" id="divider">
           <div className="panel-header">
             <h2>Potential Divider &amp; Circuit Studio</h2>
             <p>
@@ -822,7 +854,7 @@ export default function Calculators() {
       {/* TAB 4: FORMULA QUICK RUNNER */}
       {/* ======================================================== */}
       {activeTab === "quick" && (
-        <section className="solver-panel">
+        <section className="solver-panel" id="quick">
           <div className="panel-header">
             <h2>Formula Quick Runner</h2>
             <p>
@@ -836,7 +868,7 @@ export default function Calculators() {
               id="quick-formula-select"
               className="finder-select"
               value={quickFormulaId}
-              onChange={(e) => setQuickFormulaId(e.target.value)}
+              onChange={(e) => setSelectedFormulaId(e.target.value)}
             >
               {formulas.map((f) => (
                 <option key={f.id} value={f.id}>

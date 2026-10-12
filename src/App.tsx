@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
+import ScrollManager from "./components/ScrollManager";
 import Home from "./pages/Home";
 import "./App.css";
 
@@ -21,6 +22,7 @@ function LoadingFallback() {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollManager />
       <div className="app">
         <Header />
 

@@ -230,7 +230,7 @@ export function Home() {
             <p>
               Enter <strong>any 3</strong> known kinematic values and instantly solve the remaining 2 with complete step-by-step working.
             </p>
-            <Link to="/calculators" className="tool-card-btn">
+            <Link to="/calculators#suvat" className="tool-card-btn">
               Open SUVAT Solver &rarr;
             </Link>
           </div>
@@ -241,7 +241,7 @@ export function Home() {
             <p>
               Interchange wavelength (&lambda;), frequency (f), energy in Joules (J), and electron-volts (eV) seamlessly.
             </p>
-            <Link to="/calculators" className="tool-card-btn">
+            <Link to="/calculators#photon" className="tool-card-btn">
               Open Quantum Studio &rarr;
             </Link>
           </div>
@@ -252,7 +252,7 @@ export function Home() {
             <p>
               Analyze series resistor circuits, calculate output voltage <MathView text="$V_{out}$" />, current, and component power dissipation.
             </p>
-            <Link to="/calculators" className="tool-card-btn">
+            <Link to="/calculators#divider" className="tool-card-btn">
               Open Circuit Studio &rarr;
             </Link>
           </div>
@@ -263,7 +263,7 @@ export function Home() {
             <p>
               Calculate real and complex roots of <MathView text="$ax^2 + bx + c = 0$" /> with discriminant analysis and step-by-step working.
             </p>
-            <Link to="/formulas/quadratic-formula" className="tool-card-btn">
+            <Link to="/formulas/quadratic-formula#calculator" className="tool-card-btn">
               Open Quadratic Solver &rarr;
             </Link>
           </div>

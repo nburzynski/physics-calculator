@@ -122,7 +122,7 @@ export function TopicPage() {
                   <div className="equation-math">
                     <MathView math={f.equation} />
                   </div>
-                  <Link to={`/formulas/${f.id}`} className="equation-link">
+                  <Link to={`/formulas/${f.id}#calculator`} className="equation-link">
                     Open Calculator &rarr;
                   </Link>
                 </div>

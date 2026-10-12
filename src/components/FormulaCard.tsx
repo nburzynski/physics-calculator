@@ -10,7 +10,7 @@ type FormulaCardProps = {
 export function FormulaCard({ formula, showSubjectBadge = false }: FormulaCardProps) {
   return (
     <Link
-      to={`/formulas/${formula.id}`}
+      to={`/formulas/${formula.id}#calculator`}
       className="formula-row"
       aria-label={`${formula.name} calculator, formula ${formula.equation}`}
     >

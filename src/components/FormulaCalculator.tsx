@@ -178,7 +178,7 @@ export const FormulaCalculator: React.FC<FormulaCalculatorProps> = ({ formula })
   );
 
   return (
-    <section className="interactive-calculator-card" aria-labelledby="calc-solver-heading">
+    <section className="interactive-calculator-card" id="calculator" aria-labelledby="calc-solver-heading">
       <div className="calculator-card-header">
         <div className="calc-header-text">
           <p className="eyebrow">EQUATION SOLVER</p>
