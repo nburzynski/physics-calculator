@@ -2583,7 +2583,7 @@ function normalizeTopicKey(str: string): string {
     .toLowerCase()
     .replace(/-/g, " ")
     .replace(/,/g, "")
-    .replace(/&/g, "")
+    .  replace(/&/g, "")
     .replace(/\band\b/g, "")
     .replace(/\s+/g, " ")
     .trim()
@@ -2637,4 +2637,4 @@ export function getRelatedFormulas(formula: Formula, limit = 4): Formula[] {
   );
 
   return [...sameTopic, ...sameSubject].slice(0, limit);
-}
+}

@@ -2156,9 +2156,954 @@ export function calculateFormula(
     }
   }
 
+  // ============================================================
+  // KINETIC ENERGY: Ek = 1/2 m v^2
+  // ============================================================
+  if (formula.calculatorType === "kinetic-energy" || formula.id === "kinetic-energy") {
+    const E = val("energy");
+    const m = val("mass");
+    const v = val("velocity");
+    if (missing === "energy") {
+      const ans = 0.5 * m * v * v;
+      return makeSteps(eq, symbol, unit, "Ek = ½mv²", `Ek = ½ × ${fNum(m)} × (${fNum(v)})²`, ans);
+    }
+    if (missing === "mass") {
+      if (v === 0) return { success: false, error: "Velocity cannot be zero." };
+      const ans = (2 * E) / (v * v);
+      return makeSteps(eq, symbol, unit, "m = 2Ek ÷ v²", `m = (2 × ${fNum(E)}) ÷ (${fNum(v)})²`, ans);
+    }
+    if (missing === "velocity") {
+      if (m <= 0) return { success: false, error: "Mass must be greater than zero." };
+      const vSq = (2 * E) / m;
+      if (vSq < 0) return { success: false, error: "Kinetic energy cannot be negative." };
+      const ans = Math.sqrt(vSq);
+      return makeSteps(eq, symbol, unit, "v = √(2Ek ÷ m)", `v = √(2 × ${fNum(E)} ÷ ${fNum(m)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // GPE (UNIFORM FIELD): Ep = mgh
+  // ============================================================
+  if (formula.calculatorType === "gpe" || formula.id === "gravitational-potential-energy") {
+    const E = val("energy");
+    const m = val("mass");
+    const g = val("gravity");
+    const h = val("height");
+    if (missing === "energy") {
+      return makeSteps(eq, symbol, unit, "Ep = mgh", `Ep = ${fNum(m)} × ${fNum(g)} × ${fNum(h)}`, m * g * h);
+    }
+    if (missing === "mass") {
+      if (g === 0 || h === 0) return { success: false, error: "g and h cannot be zero." };
+      const ans = E / (g * h);
+      return makeSteps(eq, symbol, unit, "m = Ep ÷ (g × h)", `m = ${fNum(E)} ÷ (${fNum(g)} × ${fNum(h)})`, ans);
+    }
+    if (missing === "height") {
+      if (m === 0 || g === 0) return { success: false, error: "Mass and g cannot be zero." };
+      const ans = E / (m * g);
+      return makeSteps(eq, symbol, unit, "h = Ep ÷ (m × g)", `h = ${fNum(E)} ÷ (${fNum(m)} × ${fNum(g)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // PERCENTAGE UNCERTAINTY
+  // ============================================================
+  if (formula.id === "percentage-uncertainty") {
+    const pct = val("percentage-uncertainty");
+    const dx = val("absolute-uncertainty");
+    const x = val("measured-value");
+    if (missing === "percentage-uncertainty") {
+      if (x === 0) return { success: false, error: "Measured value cannot be zero." };
+      const ans = (dx / Math.abs(x)) * 100;
+      return makeSteps(eq, symbol, unit, "% = (Δx / x) × 100", `% = (${fNum(dx)} / ${fNum(x)}) × 100`, ans);
+    }
+    if (missing === "absolute-uncertainty") {
+      const ans = (pct / 100) * Math.abs(x);
+      return makeSteps(eq, symbol, unit, "Δx = (% / 100) × x", `Δx = (${fNum(pct)} / 100) × ${fNum(x)}`, ans);
+    }
+    if (missing === "measured-value") {
+      if (pct === 0) return { success: false, error: "Percentage uncertainty cannot be zero." };
+      const ans = dx / (pct / 100);
+      return makeSteps(eq, symbol, unit, "x = Δx / (% / 100)", `x = ${fNum(dx)} / (${fNum(pct)} / 100)`, ans);
+    }
+  }
+
+  // ============================================================
+  // SHM SIMPLE PENDULUM: T = 2π √(L/g)
+  // ============================================================
+  if (formula.id === "shm-simple-pendulum") {
+    const T = val("period");
+    const L = val("length");
+    const g = val("gravity");
+    if (missing === "period") {
+      if (g <= 0) return { success: false, error: "Gravitational field strength must be positive." };
+      const ans = 2 * Math.PI * Math.sqrt(L / g);
+      return makeSteps(eq, symbol, unit, "T = 2π √(L/g)", `T = 2π × √(${fNum(L)} / ${fNum(g)})`, ans);
+    }
+    if (missing === "length") {
+      const ans = g * (T / (2 * Math.PI)) ** 2;
+      return makeSteps(eq, symbol, unit, "L = g(T / 2π)²", `L = ${fNum(g)} × (${fNum(T)} / (2π))²`, ans);
+    }
+    if (missing === "gravity") {
+      if (T === 0) return { success: false, error: "Period cannot be zero." };
+      const ans = L * (2 * Math.PI / T) ** 2;
+      return makeSteps(eq, symbol, unit, "g = L(2π / T)²", `g = ${fNum(L)} × (2π / ${fNum(T)})²`, ans);
+    }
+  }
+
+  // ============================================================
+  // SHM MASS-SPRING: T = 2π √(m/k)
+  // ============================================================
+  if (formula.id === "shm-mass-spring") {
+    const T = val("period");
+    const m = val("mass");
+    const k = val("spring-constant");
+    if (missing === "period") {
+      if (k <= 0) return { success: false, error: "Spring constant must be positive." };
+      const ans = 2 * Math.PI * Math.sqrt(m / k);
+      return makeSteps(eq, symbol, unit, "T = 2π √(m/k)", `T = 2π × √(${fNum(m)} / ${fNum(k)})`, ans);
+    }
+    if (missing === "mass") {
+      const ans = k * (T / (2 * Math.PI)) ** 2;
+      return makeSteps(eq, symbol, unit, "m = k(T / 2π)²", `m = ${fNum(k)} × (${fNum(T)} / (2π))²`, ans);
+    }
+    if (missing === "spring-constant") {
+      if (T === 0) return { success: false, error: "Period cannot be zero." };
+      const ans = m * (2 * Math.PI / T) ** 2;
+      return makeSteps(eq, symbol, unit, "k = m(2π / T)²", `k = ${fNum(m)} × (2π / ${fNum(T)})²`, ans);
+    }
+  }
+
+  // ============================================================
+  // SHM VELOCITY AT DISPLACEMENT: v = ω √(A² - x²)
+  // ============================================================
+  if (formula.id === "shm-velocity-displacement") {
+    const v = val("velocity");
+    const omega = val("angular-frequency");
+    const A = val("amplitude");
+    const x = val("displacement");
+    if (missing === "velocity") {
+      const inner = A * A - x * x;
+      if (inner < 0) return { success: false, error: "Displacement cannot exceed amplitude." };
+      const ans = omega * Math.sqrt(inner);
+      return makeSteps(eq, symbol, unit, "v = ω√(A² - x²)", `v = ${fNum(omega)} × √(${fNum(A)}² - ${fNum(x)}²)`, ans);
+    }
+    if (missing === "angular-frequency") {
+      const inner = A * A - x * x;
+      if (inner <= 0) return { success: false, error: "A² - x² must be positive." };
+      const ans = v / Math.sqrt(inner);
+      return makeSteps(eq, symbol, unit, "ω = v / √(A² - x²)", `ω = ${fNum(v)} / √(${fNum(A)}² - ${fNum(x)}²)`, ans);
+    }
+    if (missing === "amplitude") {
+      if (omega === 0) return { success: false, error: "Angular frequency cannot be zero." };
+      const ans = Math.sqrt((v / omega) ** 2 + x * x);
+      return makeSteps(eq, symbol, unit, "A = √((v/ω)² + x²)", `A = √((${fNum(v)}/${fNum(omega)})² + ${fNum(x)}²)`, ans);
+    }
+    if (missing === "displacement") {
+      if (omega === 0) return { success: false, error: "Angular frequency cannot be zero." };
+      const inner = A * A - (v / omega) ** 2;
+      if (inner < 0) return { success: false, error: "No real solution: v/ω exceeds A." };
+      const ans = Math.sqrt(inner);
+      return makeSteps(eq, symbol, unit, "x = √(A² - (v/ω)²)", `x = √(${fNum(A)}² - (${fNum(v)}/${fNum(omega)})²)`, ans);
+    }
+  }
+
+  // ============================================================
+  // KINETIC THEORY PRESSURE: pV = (1/3) N m c²
+  // ============================================================
+  if (formula.id === "kinetic-theory-pressure") {
+    const p = val("pressure");
+    const V = val("volume");
+    const N = val("particles");
+    const m = val("molecular-mass");
+    const cSq = val("mean-square-speed");
+    if (missing === "pressure") {
+      if (V === 0) return { success: false, error: "Volume cannot be zero." };
+      const ans = (N * m * cSq) / (3 * V);
+      return makeSteps(eq, symbol, unit, "p = Nmc² / (3V)", `p = (${fNum(N)} × ${fNum(m)} × ${fNum(cSq)}) / (3 × ${fNum(V)})`, ans);
+    }
+    if (missing === "volume") {
+      if (p === 0) return { success: false, error: "Pressure cannot be zero." };
+      const ans = (N * m * cSq) / (3 * p);
+      return makeSteps(eq, symbol, unit, "V = Nmc² / (3p)", `V = (${fNum(N)} × ${fNum(m)} × ${fNum(cSq)}) / (3 × ${fNum(p)})`, ans);
+    }
+    if (missing === "mean-square-speed") {
+      if (N === 0 || m === 0) return { success: false, error: "N and m cannot be zero." };
+      const ans = (3 * p * V) / (N * m);
+      return makeSteps(eq, symbol, unit, "c² = 3pV / (Nm)", `c² = (3 × ${fNum(p)} × ${fNum(V)}) / (${fNum(N)} × ${fNum(m)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // GAS MOLECULAR KE: Ek = (3/2) k T
+  // ============================================================
+  if (formula.id === "gas-particle-kinetic-energy") {
+    const Ek = val("kinetic-energy");
+    const k = val("boltzmann");
+    const T = val("temperature");
+    if (missing === "kinetic-energy") {
+      const ans = 1.5 * k * T;
+      return makeSteps(eq, symbol, unit, "Ek = (3/2) k T", `Ek = 1.5 × ${fNum(k)} × ${fNum(T)}`, ans);
+    }
+    if (missing === "temperature") {
+      if (k === 0) return { success: false, error: "Boltzmann constant cannot be zero." };
+      const ans = (2 * Ek) / (3 * k);
+      return makeSteps(eq, symbol, unit, "T = 2Ek / (3k)", `T = (2 × ${fNum(Ek)}) / (3 × ${fNum(k)})`, ans);
+    }
+    if (missing === "boltzmann") {
+      if (T === 0) return { success: false, error: "Temperature cannot be zero." };
+      const ans = (2 * Ek) / (3 * T);
+      return makeSteps(eq, symbol, unit, "k = 2Ek / (3T)", `k = (2 × ${fNum(Ek)}) / (3 × ${fNum(T)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // GRAVITATIONAL POTENTIAL: Vg = -GM/r
+  // ============================================================
+  if (formula.id === "gravitational-potential") {
+    const Vg = val("potential");
+    const G = val("gravitational-constant");
+    const M = val("mass");
+    const r = val("radius");
+    if (missing === "potential") {
+      if (r === 0) return { success: false, error: "Distance cannot be zero." };
+      const ans = -(G * M) / r;
+      return makeSteps(eq, symbol, unit, "Vg = -GM / r", `Vg = -(${fNum(G)} × ${fNum(M)}) / ${fNum(r)}`, ans);
+    }
+    if (missing === "mass") {
+      if (r === 0 || G === 0) return { success: false, error: "G and r cannot be zero." };
+      const ans = (-Vg * r) / G;
+      return makeSteps(eq, symbol, unit, "M = -Vg × r / G", `M = -${fNum(Vg)} × ${fNum(r)} / ${fNum(G)}`, ans);
+    }
+    if (missing === "radius") {
+      if (Vg === 0) return { success: false, error: "Potential cannot be zero." };
+      const ans = -(G * M) / Vg;
+      return makeSteps(eq, symbol, unit, "r = -GM / Vg", `r = -(${fNum(G)} × ${fNum(M)}) / ${fNum(Vg)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // GRAVITATIONAL PE (RADIAL): Ep = -GMm/r
+  // ============================================================
+  if (formula.id === "gravitational-potential-energy-radial") {
+    const Ep = val("potential-energy");
+    const G = val("gravitational-constant");
+    const M = val("mass-one");
+    const m = val("mass-two");
+    const r = val("radius");
+    if (missing === "potential-energy") {
+      if (r === 0) return { success: false, error: "Distance cannot be zero." };
+      const ans = -(G * M * m) / r;
+      return makeSteps(eq, symbol, unit, "Ep = -GMm / r", `Ep = -(${fNum(G)} × ${fNum(M)} × ${fNum(m)}) / ${fNum(r)}`, ans);
+    }
+    if (missing === "radius") {
+      if (Ep === 0) return { success: false, error: "Potential energy cannot be zero." };
+      const ans = -(G * M * m) / Ep;
+      return makeSteps(eq, symbol, unit, "r = -GMm / Ep", `r = -(${fNum(G)} × ${fNum(M)} × ${fNum(m)}) / ${fNum(Ep)}`, ans);
+    }
+    if (missing === "mass-one") {
+      if (r === 0 || G === 0 || m === 0) return { success: false, error: "G, m, and r cannot be zero." };
+      const ans = (-Ep * r) / (G * m);
+      return makeSteps(eq, symbol, unit, "M = -Ep × r / (Gm)", `M = (-${fNum(Ep)} × ${fNum(r)}) / (${fNum(G)} × ${fNum(m)})`, ans);
+    }
+    if (missing === "mass-two") {
+      if (r === 0 || G === 0 || M === 0) return { success: false, error: "G, M, and r cannot be zero." };
+      const ans = (-Ep * r) / (G * M);
+      return makeSteps(eq, symbol, unit, "m = -Ep × r / (GM)", `m = (-${fNum(Ep)} × ${fNum(r)}) / (${fNum(G)} × ${fNum(M)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // ORBITAL VELOCITY: v = √(GM/r)
+  // ============================================================
+  if (formula.id === "orbital-velocity") {
+    const v = val("velocity");
+    const G = val("gravitational-constant");
+    const M = val("mass");
+    const r = val("radius");
+    if (missing === "velocity") {
+      if (r <= 0) return { success: false, error: "Orbital radius must be positive." };
+      const ans = Math.sqrt((G * M) / r);
+      return makeSteps(eq, symbol, unit, "v = √(GM / r)", `v = √(${fNum(G)} × ${fNum(M)} / ${fNum(r)})`, ans);
+    }
+    if (missing === "mass") {
+      if (G === 0) return { success: false, error: "G cannot be zero." };
+      const ans = (v * v * r) / G;
+      return makeSteps(eq, symbol, unit, "M = v²r / G", `M = (${fNum(v)})² × ${fNum(r)} / ${fNum(G)}`, ans);
+    }
+    if (missing === "radius") {
+      if (v === 0) return { success: false, error: "Velocity cannot be zero." };
+      const ans = (G * M) / (v * v);
+      return makeSteps(eq, symbol, unit, "r = GM / v²", `r = (${fNum(G)} × ${fNum(M)}) / (${fNum(v)})²`, ans);
+    }
+  }
+
+  // ============================================================
+  // KEPLER'S THIRD LAW: T² = (4π²/GM) r³
+  // ============================================================
+  if (formula.id === "keplers-third-law") {
+    const T = val("period");
+    const r = val("radius");
+    const G = val("gravitational-constant");
+    const M = val("mass");
+    if (missing === "period") {
+      if (G === 0 || M === 0) return { success: false, error: "G and M cannot be zero." };
+      const ans = Math.sqrt((4 * Math.PI * Math.PI * r * r * r) / (G * M));
+      return makeSteps(eq, symbol, unit, "T = √(4π²r³ / GM)", `T = √(4π² × ${fNum(r)}³ / (${fNum(G)} × ${fNum(M)}))`, ans);
+    }
+    if (missing === "radius") {
+      const ans = Math.cbrt((G * M * T * T) / (4 * Math.PI * Math.PI));
+      return makeSteps(eq, symbol, unit, "r = (GMT² / 4π²)^(1/3)", `r = (${fNum(G)} × ${fNum(M)} × ${fNum(T)}² / (4π²))^(1/3)`, ans);
+    }
+    if (missing === "mass") {
+      if (G === 0 || T === 0) return { success: false, error: "G and T cannot be zero." };
+      const ans = (4 * Math.PI * Math.PI * r * r * r) / (G * T * T);
+      return makeSteps(eq, symbol, unit, "M = 4π²r³ / (GT²)", `M = (4π² × ${fNum(r)}³) / (${fNum(G)} × ${fNum(T)}²)`, ans);
+    }
+  }
+
+  // ============================================================
+  // WIEN'S DISPLACEMENT LAW: λmax × T = b
+  // ============================================================
+  if (formula.id === "wiens-displacement-law") {
+    const lambda = val("wavelength");
+    const T = val("temperature");
+    const b = val("wien-constant");
+    if (missing === "wavelength") {
+      if (T === 0) return { success: false, error: "Temperature cannot be zero." };
+      const ans = b / T;
+      return makeSteps(eq, symbol, unit, "λmax = b / T", `λmax = ${fNum(b)} / ${fNum(T)}`, ans);
+    }
+    if (missing === "temperature") {
+      if (lambda === 0) return { success: false, error: "Wavelength cannot be zero." };
+      const ans = b / lambda;
+      return makeSteps(eq, symbol, unit, "T = b / λmax", `T = ${fNum(b)} / ${fNum(lambda)}`, ans);
+    }
+    if (missing === "wien-constant") {
+      const ans = lambda * T;
+      return makeSteps(eq, symbol, unit, "b = λmax × T", `b = ${fNum(lambda)} × ${fNum(T)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // DOPPLER REDSHIFT: z = Δλ/λ = v/c
+  // ============================================================
+  if (formula.id === "doppler-redshift") {
+    const z = val("redshift");
+    const dl = val("delta-wavelength");
+    const lambda = val("wavelength");
+    const v = val("velocity");
+    const c = val("light-speed");
+    // Two independent relationships share the same formula; user can use either pair
+    if (missing === "redshift") {
+      if (lambda !== 0 && dl !== 0) {
+        const ans = dl / lambda;
+        return makeSteps(eq, symbol, unit, "z = Δλ / λ", `z = ${fNum(dl)} / ${fNum(lambda)}`, ans);
+      }
+      if (c !== 0) {
+        const ans = v / c;
+        return makeSteps(eq, symbol, unit, "z = v / c", `z = ${fNum(v)} / ${fNum(c)}`, ans);
+      }
+    }
+    if (missing === "velocity") {
+      const ans = z * c;
+      return makeSteps(eq, symbol, unit, "v = zc", `v = ${fNum(z)} × ${fNum(c)}`, ans);
+    }
+    if (missing === "delta-wavelength") {
+      const ans = z * lambda;
+      return makeSteps(eq, symbol, unit, "Δλ = z × λ", `Δλ = ${fNum(z)} × ${fNum(lambda)}`, ans);
+    }
+    if (missing === "wavelength") {
+      if (z === 0) return { success: false, error: "Redshift cannot be zero." };
+      const ans = dl / z;
+      return makeSteps(eq, symbol, unit, "λ = Δλ / z", `λ = ${fNum(dl)} / ${fNum(z)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // COULOMB'S LAW: F = Q1 Q2 / (4πε0 r²)
+  // ============================================================
+  if (formula.id === "coulombs-law") {
+    const F = val("force");
+    const Q1 = val("charge-one");
+    const Q2 = val("charge-two");
+    const r = val("distance");
+    const eps = val("permittivity");
+    const k_e = 1 / (4 * Math.PI * eps);
+    if (missing === "force") {
+      if (r === 0) return { success: false, error: "Distance cannot be zero." };
+      const ans = k_e * Q1 * Q2 / (r * r);
+      return makeSteps(eq, symbol, unit, "F = Q1Q2 / (4πε0r²)", `F = (${fNum(Q1)} × ${fNum(Q2)}) / (4π × ${fNum(eps)} × ${fNum(r)}²)`, ans);
+    }
+    if (missing === "charge-one") {
+      if (r === 0 || Q2 === 0) return { success: false, error: "r and Q2 cannot be zero." };
+      const ans = F * 4 * Math.PI * eps * r * r / Q2;
+      return makeSteps(eq, symbol, unit, "Q1 = F × 4πε0r² / Q2", `Q1 = ${fNum(F)} × 4π × ${fNum(eps)} × ${fNum(r)}² / ${fNum(Q2)}`, ans);
+    }
+    if (missing === "charge-two") {
+      if (r === 0 || Q1 === 0) return { success: false, error: "r and Q1 cannot be zero." };
+      const ans = F * 4 * Math.PI * eps * r * r / Q1;
+      return makeSteps(eq, symbol, unit, "Q2 = F × 4πε0r² / Q1", `Q2 = ${fNum(F)} × 4π × ${fNum(eps)} × ${fNum(r)}² / ${fNum(Q1)}`, ans);
+    }
+    if (missing === "distance") {
+      if (F === 0 || Q1 === 0 || Q2 === 0) return { success: false, error: "F, Q1, and Q2 cannot be zero." };
+      const rSq = Math.abs(k_e * Q1 * Q2 / F);
+      const ans = Math.sqrt(rSq);
+      return makeSteps(eq, symbol, unit, "r = √(Q1Q2 / (4πε0F))", `r = √(${fNum(Q1)} × ${fNum(Q2)} / (4π × ${fNum(eps)} × ${fNum(F)}))`, ans);
+    }
+  }
+
+  // ============================================================
+  // ELECTRIC FIELD (POINT CHARGE): E = Q / (4πε0 r²)
+  // ============================================================
+  if (formula.id === "electric-field-point-charge") {
+    const E = val("field-strength");
+    const Q = val("charge");
+    const r = val("distance");
+    const eps = val("permittivity");
+    if (missing === "field-strength") {
+      if (r === 0) return { success: false, error: "Distance cannot be zero." };
+      const ans = Q / (4 * Math.PI * eps * r * r);
+      return makeSteps(eq, symbol, unit, "E = Q / (4πε0r²)", `E = ${fNum(Q)} / (4π × ${fNum(eps)} × ${fNum(r)}²)`, ans);
+    }
+    if (missing === "charge") {
+      if (r === 0) return { success: false, error: "Distance cannot be zero." };
+      const ans = E * 4 * Math.PI * eps * r * r;
+      return makeSteps(eq, symbol, unit, "Q = E × 4πε0r²", `Q = ${fNum(E)} × 4π × ${fNum(eps)} × ${fNum(r)}²`, ans);
+    }
+    if (missing === "distance") {
+      if (E === 0 || Q === 0) return { success: false, error: "E and Q cannot be zero." };
+      const rSq = Math.abs(Q / (4 * Math.PI * eps * E));
+      const ans = Math.sqrt(rSq);
+      return makeSteps(eq, symbol, unit, "r = √(Q / (4πε0E))", `r = √(${fNum(Q)} / (4π × ${fNum(eps)} × ${fNum(E)}))`, ans);
+    }
+  }
+
+  // ============================================================
+  // ELECTRIC POTENTIAL (POINT CHARGE): V = Q / (4πε0 r)
+  // ============================================================
+  if (formula.id === "electric-potential-point-charge") {
+    const V = val("potential");
+    const Q = val("charge");
+    const r = val("distance");
+    const eps = val("permittivity");
+    if (missing === "potential") {
+      if (r === 0) return { success: false, error: "Distance cannot be zero." };
+      const ans = Q / (4 * Math.PI * eps * r);
+      return makeSteps(eq, symbol, unit, "V = Q / (4πε0r)", `V = ${fNum(Q)} / (4π × ${fNum(eps)} × ${fNum(r)})`, ans);
+    }
+    if (missing === "charge") {
+      if (r === 0) return { success: false, error: "Distance cannot be zero." };
+      const ans = V * 4 * Math.PI * eps * r;
+      return makeSteps(eq, symbol, unit, "Q = V × 4πε0r", `Q = ${fNum(V)} × 4π × ${fNum(eps)} × ${fNum(r)}`, ans);
+    }
+    if (missing === "distance") {
+      if (V === 0) return { success: false, error: "Potential cannot be zero." };
+      const ans = Q / (4 * Math.PI * eps * V);
+      return makeSteps(eq, symbol, unit, "r = Q / (4πε0V)", `r = ${fNum(Q)} / (4π × ${fNum(eps)} × ${fNum(V)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // ELECTRIC POTENTIAL ENERGY: Ep = Q1 Q2 / (4πε0 r)
+  // ============================================================
+  if (formula.id === "electric-potential-energy") {
+    const Ep = val("potential-energy");
+    const Q1 = val("charge-one");
+    const Q2 = val("charge-two");
+    const r = val("distance");
+    const eps = val("permittivity");
+    if (missing === "potential-energy") {
+      if (r === 0) return { success: false, error: "Distance cannot be zero." };
+      const ans = Q1 * Q2 / (4 * Math.PI * eps * r);
+      return makeSteps(eq, symbol, unit, "Ep = Q1Q2 / (4πε0r)", `Ep = (${fNum(Q1)} × ${fNum(Q2)}) / (4π × ${fNum(eps)} × ${fNum(r)})`, ans);
+    }
+    if (missing === "distance") {
+      if (Ep === 0 || Q1 === 0 || Q2 === 0) return { success: false, error: "Ep, Q1, Q2 cannot be zero." };
+      const ans = Q1 * Q2 / (4 * Math.PI * eps * Ep);
+      return makeSteps(eq, symbol, unit, "r = Q1Q2 / (4πε0Ep)", `r = (${fNum(Q1)} × ${fNum(Q2)}) / (4π × ${fNum(eps)} × ${fNum(Ep)})`, ans);
+    }
+    if (missing === "charge-one") {
+      if (r === 0 || Q2 === 0) return { success: false, error: "r and Q2 cannot be zero." };
+      const ans = Ep * 4 * Math.PI * eps * r / Q2;
+      return makeSteps(eq, symbol, unit, "Q1 = Ep × 4πε0r / Q2", `Q1 = ${fNum(Ep)} × 4π × ${fNum(eps)} × ${fNum(r)} / ${fNum(Q2)}`, ans);
+    }
+    if (missing === "charge-two") {
+      if (r === 0 || Q1 === 0) return { success: false, error: "r and Q1 cannot be zero." };
+      const ans = Ep * 4 * Math.PI * eps * r / Q1;
+      return makeSteps(eq, symbol, unit, "Q2 = Ep × 4πε0r / Q1", `Q2 = ${fNum(Ep)} × 4π × ${fNum(eps)} × ${fNum(r)} / ${fNum(Q1)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // ELECTRIC POTENTIAL GRADIENT: E = -ΔV/Δr
+  // ============================================================
+  if (formula.id === "electric-potential-gradient") {
+    const E = val("field-strength");
+    const dV = val("potential-difference");
+    const dr = val("distance");
+    if (missing === "field-strength") {
+      if (dr === 0) return { success: false, error: "Distance cannot be zero." };
+      const ans = -dV / dr;
+      return makeSteps(eq, symbol, unit, "E = -ΔV / Δr", `E = -${fNum(dV)} / ${fNum(dr)}`, ans);
+    }
+    if (missing === "potential-difference") {
+      const ans = -E * dr;
+      return makeSteps(eq, symbol, unit, "ΔV = -E × Δr", `ΔV = -${fNum(E)} × ${fNum(dr)}`, ans);
+    }
+    if (missing === "distance") {
+      if (E === 0) return { success: false, error: "Field strength cannot be zero." };
+      const ans = -dV / E;
+      return makeSteps(eq, symbol, unit, "Δr = -ΔV / E", `Δr = -${fNum(dV)} / ${fNum(E)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // PHOTOELECTRIC STOPPING POTENTIAL: eVs = KEmax
+  // ============================================================
+  if (formula.id === "photoelectric-stopping-potential") {
+    const ke = val("kinetic-energy");
+    const e = val("charge");
+    const Vs = val("stopping-potential");
+    if (missing === "kinetic-energy") {
+      const ans = e * Vs;
+      return makeSteps(eq, symbol, unit, "KEmax = eVs", `KEmax = ${fNum(e)} × ${fNum(Vs)}`, ans);
+    }
+    if (missing === "stopping-potential") {
+      if (e === 0) return { success: false, error: "Charge cannot be zero." };
+      const ans = ke / e;
+      return makeSteps(eq, symbol, unit, "Vs = KEmax / e", `Vs = ${fNum(ke)} / ${fNum(e)}`, ans);
+    }
+    if (missing === "charge") {
+      if (Vs === 0) return { success: false, error: "Stopping potential cannot be zero." };
+      const ans = ke / Vs;
+      return makeSteps(eq, symbol, unit, "e = KEmax / Vs", `e = ${fNum(ke)} / ${fNum(Vs)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // PARALLEL PLATE CAPACITANCE: C = ε0 A / d
+  // ============================================================
+  if (formula.id === "parallel-plate-capacitance") {
+    const C = val("capacitance");
+    const eps = val("permittivity");
+    const A = val("area");
+    const d = val("separation");
+    if (missing === "capacitance") {
+      if (d === 0) return { success: false, error: "Plate separation cannot be zero." };
+      const ans = (eps * A) / d;
+      return makeSteps(eq, symbol, unit, "C = ε0A / d", `C = (${fNum(eps)} × ${fNum(A)}) / ${fNum(d)}`, ans);
+    }
+    if (missing === "area") {
+      if (eps === 0) return { success: false, error: "Permittivity cannot be zero." };
+      const ans = (C * d) / eps;
+      return makeSteps(eq, symbol, unit, "A = Cd / ε0", `A = (${fNum(C)} × ${fNum(d)}) / ${fNum(eps)}`, ans);
+    }
+    if (missing === "separation") {
+      if (C === 0) return { success: false, error: "Capacitance cannot be zero." };
+      const ans = (eps * A) / C;
+      return makeSteps(eq, symbol, unit, "d = ε0A / C", `d = (${fNum(eps)} × ${fNum(A)}) / ${fNum(C)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // SPHERICAL CONDUCTOR CAPACITANCE: C = 4πε0 R
+  // ============================================================
+  if (formula.id === "spherical-conductor-capacitance") {
+    const C = val("capacitance");
+    const eps = val("permittivity");
+    const R = val("radius");
+    if (missing === "capacitance") {
+      const ans = 4 * Math.PI * eps * R;
+      return makeSteps(eq, symbol, unit, "C = 4πε0R", `C = 4π × ${fNum(eps)} × ${fNum(R)}`, ans);
+    }
+    if (missing === "radius") {
+      if (eps === 0) return { success: false, error: "Permittivity cannot be zero." };
+      const ans = C / (4 * Math.PI * eps);
+      return makeSteps(eq, symbol, unit, "R = C / (4πε0)", `R = ${fNum(C)} / (4π × ${fNum(eps)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // CAPACITOR DISCHARGE: Q = Q0 e^(-t/RC)
+  // ============================================================
+  if (formula.id === "capacitor-discharge-exponential") {
+    const Q = val("charge");
+    const Q0 = val("initial-charge");
+    const t = val("time");
+    const R = val("resistance");
+    const C = val("capacitance");
+    const tau = R * C;
+    if (missing === "charge") {
+      if (tau === 0) return { success: false, error: "RC cannot be zero." };
+      const ans = Q0 * Math.exp(-t / tau);
+      return makeSteps(eq, symbol, unit, "Q = Q0 × e^(-t/RC)", `Q = ${fNum(Q0)} × e^(-${fNum(t)}/(${fNum(R)}×${fNum(C)}))`, ans);
+    }
+    if (missing === "initial-charge") {
+      if (tau === 0) return { success: false, error: "RC cannot be zero." };
+      const ans = Q / Math.exp(-t / tau);
+      return makeSteps(eq, symbol, unit, "Q0 = Q × e^(t/RC)", `Q0 = ${fNum(Q)} × e^(${fNum(t)}/(${fNum(R)}×${fNum(C)}))`, ans);
+    }
+    if (missing === "time") {
+      if (tau === 0) return { success: false, error: "RC cannot be zero." };
+      if (Q <= 0 || Q0 <= 0) return { success: false, error: "Q and Q0 must be positive." };
+      const ans = -tau * Math.log(Q / Q0);
+      return makeSteps(eq, symbol, unit, "t = -RC × ln(Q/Q0)", `t = -(${fNum(R)}×${fNum(C)}) × ln(${fNum(Q)}/${fNum(Q0)})`, ans);
+    }
+    if (missing === "resistance") {
+      if (C === 0 || Q <= 0 || Q0 <= 0) return { success: false, error: "C, Q, Q0 must be non-zero positive." };
+      const ans = -t / (C * Math.log(Q / Q0));
+      return makeSteps(eq, symbol, unit, "R = -t / (C × ln(Q/Q0))", `R = -${fNum(t)} / (${fNum(C)} × ln(${fNum(Q)}/${fNum(Q0)}))`, ans);
+    }
+    if (missing === "capacitance") {
+      if (R === 0 || Q <= 0 || Q0 <= 0) return { success: false, error: "R, Q, Q0 must be non-zero positive." };
+      const ans = -t / (R * Math.log(Q / Q0));
+      return makeSteps(eq, symbol, unit, "C = -t / (R × ln(Q/Q0))", `C = -${fNum(t)} / (${fNum(R)} × ln(${fNum(Q)}/${fNum(Q0)}))`, ans);
+    }
+  }
+
+  // ============================================================
+  // CAPACITOR CHARGING: Q = Q0 (1 - e^(-t/RC))
+  // ============================================================
+  if (formula.id === "capacitor-charging-exponential") {
+    const Q = val("charge");
+    const Q0 = val("max-charge");
+    const t = val("time");
+    const R = val("resistance");
+    const C = val("capacitance");
+    const tau = R * C;
+    if (missing === "charge") {
+      if (tau === 0) return { success: false, error: "RC cannot be zero." };
+      const ans = Q0 * (1 - Math.exp(-t / tau));
+      return makeSteps(eq, symbol, unit, "Q = Q0(1 - e^(-t/RC))", `Q = ${fNum(Q0)} × (1 - e^(-${fNum(t)}/(${fNum(R)}×${fNum(C)})))`, ans);
+    }
+    if (missing === "max-charge") {
+      if (tau === 0) return { success: false, error: "RC cannot be zero." };
+      const denom = 1 - Math.exp(-t / tau);
+      if (Math.abs(denom) < 1e-15) return { success: false, error: "Denominator is zero (t ≈ 0 or RC too large)." };
+      const ans = Q / denom;
+      return makeSteps(eq, symbol, unit, "Q0 = Q / (1 - e^(-t/RC))", `Q0 = ${fNum(Q)} / (1 - e^(-${fNum(t)}/(${fNum(R)}×${fNum(C)})))`, ans);
+    }
+    if (missing === "time") {
+      if (tau === 0) return { success: false, error: "RC cannot be zero." };
+      if (Q0 === 0) return { success: false, error: "Maximum charge cannot be zero." };
+      const ratio = 1 - Q / Q0;
+      if (ratio <= 0) return { success: false, error: "Q must be less than Q0." };
+      const ans = -tau * Math.log(ratio);
+      return makeSteps(eq, symbol, unit, "t = -RC × ln(1 - Q/Q0)", `t = -(${fNum(R)}×${fNum(C)}) × ln(1 - ${fNum(Q)}/${fNum(Q0)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // CAPACITOR HALF-LIFE: t½ = RC ln2
+  // ============================================================
+  if (formula.id === "capacitor-half-life") {
+    const t_half = val("half-time");
+    const R = val("resistance");
+    const C = val("capacitance");
+    if (missing === "half-time") {
+      const ans = R * C * Math.LN2;
+      return makeSteps(eq, symbol, unit, "t½ = RC × ln(2)", `t½ = ${fNum(R)} × ${fNum(C)} × ln(2)`, ans);
+    }
+    if (missing === "resistance") {
+      if (C === 0) return { success: false, error: "Capacitance cannot be zero." };
+      const ans = t_half / (C * Math.LN2);
+      return makeSteps(eq, symbol, unit, "R = t½ / (C × ln2)", `R = ${fNum(t_half)} / (${fNum(C)} × ln(2))`, ans);
+    }
+    if (missing === "capacitance") {
+      if (R === 0) return { success: false, error: "Resistance cannot be zero." };
+      const ans = t_half / (R * Math.LN2);
+      return makeSteps(eq, symbol, unit, "C = t½ / (R × ln2)", `C = ${fNum(t_half)} / (${fNum(R)} × ln(2))`, ans);
+    }
+  }
+
+  // ============================================================
+  // ELECTRON GUN VELOCITY: v = √(2qV/m)
+  // ============================================================
+  if (formula.id === "electron-gun-velocity") {
+    const v = val("velocity");
+    const q = val("charge");
+    const V = val("voltage");
+    const m = val("mass");
+    if (missing === "velocity") {
+      if (m <= 0) return { success: false, error: "Mass must be positive." };
+      const inner = (2 * q * V) / m;
+      if (inner < 0) return { success: false, error: "2qV/m is negative; check signs." };
+      const ans = Math.sqrt(inner);
+      return makeSteps(eq, symbol, unit, "v = √(2qV / m)", `v = √(2 × ${fNum(q)} × ${fNum(V)} / ${fNum(m)})`, ans);
+    }
+    if (missing === "voltage") {
+      if (q === 0) return { success: false, error: "Charge cannot be zero." };
+      const ans = (m * v * v) / (2 * q);
+      return makeSteps(eq, symbol, unit, "V = mv² / (2q)", `V = ${fNum(m)} × ${fNum(v)}² / (2 × ${fNum(q)})`, ans);
+    }
+    if (missing === "mass") {
+      if (v === 0) return { success: false, error: "Velocity cannot be zero." };
+      const ans = (2 * q * V) / (v * v);
+      return makeSteps(eq, symbol, unit, "m = 2qV / v²", `m = (2 × ${fNum(q)} × ${fNum(V)}) / ${fNum(v)}²`, ans);
+    }
+    if (missing === "charge") {
+      if (V === 0) return { success: false, error: "Voltage cannot be zero." };
+      const ans = (m * v * v) / (2 * V);
+      return makeSteps(eq, symbol, unit, "q = mv² / (2V)", `q = ${fNum(m)} × ${fNum(v)}² / (2 × ${fNum(V)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // CHARGED PARTICLE ACCELERATION: a = qE/m
+  // ============================================================
+  if (formula.id === "charged-particle-acceleration-field") {
+    const a = val("acceleration");
+    const q = val("charge");
+    const E = val("field-strength");
+    const m = val("mass");
+    if (missing === "acceleration") {
+      if (m === 0) return { success: false, error: "Mass cannot be zero." };
+      const ans = (q * E) / m;
+      return makeSteps(eq, symbol, unit, "a = qE / m", `a = (${fNum(q)} × ${fNum(E)}) / ${fNum(m)}`, ans);
+    }
+    if (missing === "charge") {
+      if (E === 0) return { success: false, error: "Field strength cannot be zero." };
+      const ans = (a * m) / E;
+      return makeSteps(eq, symbol, unit, "q = am / E", `q = (${fNum(a)} × ${fNum(m)}) / ${fNum(E)}`, ans);
+    }
+    if (missing === "field-strength") {
+      if (q === 0) return { success: false, error: "Charge cannot be zero." };
+      const ans = (a * m) / q;
+      return makeSteps(eq, symbol, unit, "E = am / q", `E = (${fNum(a)} × ${fNum(m)}) / ${fNum(q)}`, ans);
+    }
+    if (missing === "mass") {
+      if (a === 0) return { success: false, error: "Acceleration cannot be zero." };
+      const ans = (q * E) / a;
+      return makeSteps(eq, symbol, unit, "m = qE / a", `m = (${fNum(q)} × ${fNum(E)}) / ${fNum(a)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // MAGNETIC FLUX LINKAGE: NΦ = BAN cos θ
+  // ============================================================
+  if (formula.id === "magnetic-flux-linkage") {
+    const NFlux = val("flux-linkage");
+    const B = val("magnetic-field");
+    const A = val("area");
+    const N = val("turns");
+    const theta = val("angle");
+    if (missing === "flux-linkage") {
+      const ans = B * A * N * Math.cos(degToRad(theta));
+      return makeSteps(eq, symbol, unit, "NΦ = BAN cos θ", `NΦ = ${fNum(B)} × ${fNum(A)} × ${fNum(N)} × cos(${fNum(theta)}°)`, ans);
+    }
+    if (missing === "magnetic-field") {
+      const cosTheta = Math.cos(degToRad(theta));
+      if (Math.abs(cosTheta) < 1e-10 || A === 0 || N === 0) return { success: false, error: "A, N and cos(θ) cannot be zero." };
+      const ans = NFlux / (A * N * cosTheta);
+      return makeSteps(eq, symbol, unit, "B = NΦ / (AN cos θ)", `B = ${fNum(NFlux)} / (${fNum(A)} × ${fNum(N)} × cos(${fNum(theta)}°))`, ans);
+    }
+    if (missing === "area") {
+      const cosTheta = Math.cos(degToRad(theta));
+      if (Math.abs(cosTheta) < 1e-10 || B === 0 || N === 0) return { success: false, error: "B, N and cos(θ) cannot be zero." };
+      const ans = NFlux / (B * N * cosTheta);
+      return makeSteps(eq, symbol, unit, "A = NΦ / (BN cos θ)", `A = ${fNum(NFlux)} / (${fNum(B)} × ${fNum(N)} × cos(${fNum(theta)}°))`, ans);
+    }
+    if (missing === "turns") {
+      const cosTheta = Math.cos(degToRad(theta));
+      if (Math.abs(cosTheta) < 1e-10 || B === 0 || A === 0) return { success: false, error: "B, A and cos(θ) cannot be zero." };
+      const ans = NFlux / (B * A * cosTheta);
+      return makeSteps(eq, symbol, unit, "N = NΦ / (BA cos θ)", `N = ${fNum(NFlux)} / (${fNum(B)} × ${fNum(A)} × cos(${fNum(theta)}°))`, ans);
+    }
+    if (missing === "angle") {
+      if (B === 0 || A === 0 || N === 0) return { success: false, error: "B, A and N cannot be zero." };
+      const ratio = NFlux / (B * A * N);
+      if (ratio < -1 || ratio > 1) return { success: false, error: "NΦ/(BAN) must be between -1 and 1." };
+      const ans = radToDeg(Math.acos(ratio));
+      return makeSteps(eq, symbol, unit, "θ = arccos(NΦ / (BAN))", `θ = arccos(${fNum(NFlux)} / (${fNum(B)} × ${fNum(A)} × ${fNum(N)}))`, ans);
+    }
+  }
+
+  // ============================================================
+  // FARADAY'S LAW: ε = -Δ(NΦ)/Δt
+  // ============================================================
+  if (formula.id === "faradays-law") {
+    const emf = val("emf");
+    const dNFlux = val("flux-linkage-change");
+    const dt = val("time");
+    if (missing === "emf") {
+      if (dt === 0) return { success: false, error: "Time interval cannot be zero." };
+      const ans = -dNFlux / dt;
+      return makeSteps(eq, symbol, unit, "ε = -Δ(NΦ) / Δt", `ε = -${fNum(dNFlux)} / ${fNum(dt)}`, ans);
+    }
+    if (missing === "flux-linkage-change") {
+      const ans = -emf * dt;
+      return makeSteps(eq, symbol, unit, "Δ(NΦ) = -ε × Δt", `Δ(NΦ) = -${fNum(emf)} × ${fNum(dt)}`, ans);
+    }
+    if (missing === "time") {
+      if (emf === 0) return { success: false, error: "EMF cannot be zero." };
+      const ans = -dNFlux / emf;
+      return makeSteps(eq, symbol, unit, "Δt = -Δ(NΦ) / ε", `Δt = -${fNum(dNFlux)} / ${fNum(emf)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // CYCLOTRON RADIUS: r = mv / (Bq)
+  // ============================================================
+  if (formula.id === "cyclotron-radius") {
+    const r = val("radius");
+    const m = val("mass");
+    const v = val("velocity");
+    const B = val("magnetic-field");
+    const q = val("charge");
+    if (missing === "radius") {
+      if (B === 0 || q === 0) return { success: false, error: "B and q cannot be zero." };
+      const ans = (m * v) / (B * q);
+      return makeSteps(eq, symbol, unit, "r = mv / (Bq)", `r = (${fNum(m)} × ${fNum(v)}) / (${fNum(B)} × ${fNum(q)})`, ans);
+    }
+    if (missing === "mass") {
+      if (v === 0) return { success: false, error: "Velocity cannot be zero." };
+      const ans = (r * B * q) / v;
+      return makeSteps(eq, symbol, unit, "m = rBq / v", `m = (${fNum(r)} × ${fNum(B)} × ${fNum(q)}) / ${fNum(v)}`, ans);
+    }
+    if (missing === "velocity") {
+      if (m === 0) return { success: false, error: "Mass cannot be zero." };
+      const ans = (r * B * q) / m;
+      return makeSteps(eq, symbol, unit, "v = rBq / m", `v = (${fNum(r)} × ${fNum(B)} × ${fNum(q)}) / ${fNum(m)}`, ans);
+    }
+    if (missing === "magnetic-field") {
+      if (r === 0 || q === 0) return { success: false, error: "r and q cannot be zero." };
+      const ans = (m * v) / (r * q);
+      return makeSteps(eq, symbol, unit, "B = mv / (rq)", `B = (${fNum(m)} × ${fNum(v)}) / (${fNum(r)} × ${fNum(q)})`, ans);
+    }
+    if (missing === "charge") {
+      if (r === 0 || B === 0) return { success: false, error: "r and B cannot be zero." };
+      const ans = (m * v) / (r * B);
+      return makeSteps(eq, symbol, unit, "q = mv / (rB)", `q = (${fNum(m)} × ${fNum(v)}) / (${fNum(r)} × ${fNum(B)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // BINDING ENERGY PER NUCLEON: E/A = Δm c² / A
+  // ============================================================
+  if (formula.id === "binding-energy-per-nucleon") {
+    const bepn = val("binding-energy-per-nucleon");
+    const dm = val("mass-defect");
+    const A = val("nucleon-number");
+    const c = val("light-speed");
+    if (missing === "binding-energy-per-nucleon") {
+      if (A === 0) return { success: false, error: "Nucleon number cannot be zero." };
+      const ans = (dm * c * c) / A;
+      return makeSteps(eq, symbol, unit, "E/A = Δmc² / A", `E/A = (${fNum(dm)} × (${fNum(c)})²) / ${fNum(A)}`, ans);
+    }
+    if (missing === "mass-defect") {
+      if (c === 0) return { success: false, error: "Speed of light cannot be zero." };
+      const ans = (bepn * A) / (c * c);
+      return makeSteps(eq, symbol, unit, "Δm = (E/A) × A / c²", `Δm = (${fNum(bepn)} × ${fNum(A)}) / (${fNum(c)})²`, ans);
+    }
+    if (missing === "nucleon-number") {
+      if (bepn === 0) return { success: false, error: "Binding energy per nucleon cannot be zero." };
+      const ans = (dm * c * c) / bepn;
+      return makeSteps(eq, symbol, unit, "A = Δmc² / (E/A)", `A = (${fNum(dm)} × (${fNum(c)})²) / ${fNum(bepn)}`, ans);
+    }
+  }
+
+  // ============================================================
+  // ACOUSTIC REFLECTION COEFFICIENT: Ir/I0 = (Z2-Z1)²/(Z2+Z1)²
+  // ============================================================
+  if (formula.id === "acoustic-reflection-coefficient") {
+    const ratio = val("intensity-ratio");
+    const Z1 = val("impedance-one");
+    const Z2 = val("impedance-two");
+    if (missing === "intensity-ratio") {
+      const denom = Z2 + Z1;
+      if (denom === 0) return { success: false, error: "Z1 + Z2 cannot be zero." };
+      const ans = Math.pow(Z2 - Z1, 2) / Math.pow(denom, 2);
+      return makeSteps(eq, symbol, unit, "Ir/I0 = (Z2 - Z1)² / (Z2 + Z1)²", `Ir/I0 = (${fNum(Z2)} - ${fNum(Z1)})² / (${fNum(Z2)} + ${fNum(Z1)})²`, ans);
+    }
+    if (missing === "impedance-two") {
+      // Solve: √ratio = |Z2 - Z1| / (Z2 + Z1) — quadratic approach
+      const sqrtR = Math.sqrt(ratio);
+      if (sqrtR >= 1) return { success: false, error: "Reflection ratio cannot be ≥ 1." };
+      const ans = Z1 * (1 + sqrtR) / (1 - sqrtR);
+      return makeSteps(eq, symbol, unit, "Z2 = Z1(1+√ratio)/(1-√ratio)", `Z2 = ${fNum(Z1)} × (1 + √${fNum(ratio)}) / (1 - √${fNum(ratio)})`, ans);
+    }
+    if (missing === "impedance-one") {
+      const sqrtR = Math.sqrt(ratio);
+      if (sqrtR >= 1) return { success: false, error: "Reflection ratio cannot be ≥ 1." };
+      const ans = Z2 * (1 - sqrtR) / (1 + sqrtR);
+      return makeSteps(eq, symbol, unit, "Z1 = Z2(1-√ratio)/(1+√ratio)", `Z1 = ${fNum(Z2)} × (1 - √${fNum(ratio)}) / (1 + √${fNum(ratio)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // WAVE SPEED ON STRING: v = √(T/μ)
+  // ============================================================
+  if (formula.id === "wave-speed-string") {
+    const v = val("speed");
+    const T = val("tension");
+    const mu = val("mass-per-unit-length");
+    if (missing === "speed") {
+      if (mu <= 0) return { success: false, error: "Mass per unit length must be positive." };
+      const ans = Math.sqrt(T / mu);
+      return makeSteps(eq, symbol, unit, "v = √(T / μ)", `v = √(${fNum(T)} / ${fNum(mu)})`, ans);
+    }
+    if (missing === "tension") {
+      const ans = v * v * mu;
+      return makeSteps(eq, symbol, unit, "T = v²μ", `T = ${fNum(v)}² × ${fNum(mu)}`, ans);
+    }
+    if (missing === "mass-per-unit-length") {
+      if (v === 0) return { success: false, error: "Wave speed cannot be zero." };
+      const ans = T / (v * v);
+      return makeSteps(eq, symbol, unit, "μ = T / v²", `μ = ${fNum(T)} / ${fNum(v)}²`, ans);
+    }
+  }
+
+  // ============================================================
+  // THIN LENS EQUATION: 1/u + 1/v = 1/f
+  // ============================================================
+  if (formula.id === "thin-lens-equation") {
+    const f = val("focal-length");
+    const u = val("object-distance");
+    const v = val("image-distance");
+    if (missing === "focal-length") {
+      if (u === 0 || v === 0) return { success: false, error: "Object and image distances cannot be zero." };
+      const ans = 1 / (1 / u + 1 / v);
+      return makeSteps(eq, symbol, unit, "f = 1 / (1/u + 1/v)", `f = 1 / (1/${fNum(u)} + 1/${fNum(v)})`, ans);
+    }
+    if (missing === "object-distance") {
+      if (f === 0 || v === 0) return { success: false, error: "f and v cannot be zero." };
+      const recip = 1 / f - 1 / v;
+      if (recip === 0) return { success: false, error: "1/f - 1/v equals zero." };
+      const ans = 1 / recip;
+      return makeSteps(eq, symbol, unit, "u = 1 / (1/f - 1/v)", `u = 1 / (1/${fNum(f)} - 1/${fNum(v)})`, ans);
+    }
+    if (missing === "image-distance") {
+      if (f === 0 || u === 0) return { success: false, error: "f and u cannot be zero." };
+      const recip = 1 / f - 1 / u;
+      if (recip === 0) return { success: false, error: "1/f - 1/u equals zero." };
+      const ans = 1 / recip;
+      return makeSteps(eq, symbol, unit, "v = 1 / (1/f - 1/u)", `v = 1 / (1/${fNum(f)} - 1/${fNum(u)})`, ans);
+    }
+  }
+
+  // ============================================================
+  // LENS POWER: P = 1/f
+  // ============================================================
+  if (formula.id === "lens-power") {
+    const P = val("power");
+    const f = val("focal-length");
+    if (missing === "power") {
+      if (f === 0) return { success: false, error: "Focal length cannot be zero." };
+      const ans = 1 / f;
+      return makeSteps(eq, symbol, unit, "P = 1 / f", `P = 1 / ${fNum(f)}`, ans);
+    }
+    if (missing === "focal-length") {
+      if (P === 0) return { success: false, error: "Lens power cannot be zero." };
+      const ans = 1 / P;
+      return makeSteps(eq, symbol, unit, "f = 1 / P", `f = 1 / ${fNum(P)}`, ans);
+    }
+  }
+
   return {
     success: false,
     error: "Calculation not available for this formula configuration.",
   };
 }
+
+
 
