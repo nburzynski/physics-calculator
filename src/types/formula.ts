@@ -48,4 +48,6 @@ export type Formula = {
   assumptions?: string[];
   examBoard?: string;
   difficulty?: "GCSE / School" | "A-Level / High School" | "University / Advanced";
+  seoTitle?: string;
+  seoDescription?: string;
 };

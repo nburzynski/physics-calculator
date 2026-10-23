@@ -773,7 +773,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "electrical-work-done",
-    name: "Electrical Work Done",
+    name: "Electrical Work Done (W = VQ)",
     equation: "W = VQ",
     topic: "Electrons, Waves and Photons",
     description:
@@ -807,7 +807,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "electrical-work-current-time",
-    name: "Electrical Work Done",
+    name: "Electrical Work Done (W = VIt)",
     equation: "W = VIt",
     topic: "Electrons, Waves and Photons",
     description:
@@ -877,7 +877,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "electrical-power",
-    name: "Electrical Power",
+    name: "Electrical Power (P = VI)",
     equation: "P = VI",
     topic: "Electrons, Waves and Photons",
     description:
@@ -894,7 +894,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "electrical-power-current-resistance",
-    name: "Electrical Power",
+    name: "Electrical Power (P = I²R)",
     equation: "P = I^2R",
     topic: "Electrons, Waves and Photons",
     description:
@@ -911,7 +911,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "electrical-power-voltage-resistance",
-    name: "Electrical Power",
+    name: "Electrical Power (P = V²/R)",
     equation: "P = \\frac{V^2}{R}",
     topic: "Electrons, Waves and Photons",
     description:
@@ -1170,7 +1170,7 @@ const physicsFormulas: Formula[] = [
     topic: "Electrons, Waves and Photons",
     topicId: "electrons-waves-photons",
     description: "Calculates the optical power of a lens in dioptres from its focal length in metres.",
-    calculatorType: "divide",
+    calculatorType: "custom",
     difficulty: "A-Level / High School",
     examBoard: "Edexcel / OCR B / AQA",
     keywords: ["lens power", "dioptres", "optics", "focal length", "refraction"],
@@ -1189,33 +1189,70 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "photon-energy-frequency",
-    name: "Photon Energy",
+    name: "Photon Energy & Light Frequency (E = hf)",
     equation: "E = hf",
     topic: "Electrons, Waves and Photons",
+    topicId: "electrons-waves-photons",
     description:
-      "Calculates photon energy from Planck constant and frequency.",
-
+      "Calculates photon energy from Planck constant and frequency of light using the Planck-Einstein relation (E = hf or E = hν).",
     calculatorType: "multiply",
-
+    difficulty: "A-Level / High School",
+    examBoard: "OCR / AQA / Edexcel",
+    seoTitle: "Photon Energy & Light Frequency Calculator | E = hf",
+    seoDescription: "Calculate photon energy or frequency of light using Planck's relation E = hf. Convert between Hertz (Hz), Joules (J), and electron-volts (eV) for physics and chemistry.",
+    keywords: [
+      "chemistry frequency of light equation",
+      "frequency of light equation",
+      "photon energy calculator",
+      "e=hf calculator",
+      "planck frequency energy",
+      "energy of a photon formula",
+      "light frequency formula chemistry"
+    ],
+    notes: [
+      "The Planck-Einstein relation E = hf links the wave and particulate nature of electromagnetic radiation.",
+      "In chemistry textbooks, frequency is often written as Greek letter nu (ν), so the equation appears as E = hν.",
+      "Planck's constant h = 6.63 × 10⁻³⁴ J s (or 4.14 × 10⁻¹⁵ eV s).",
+      "To convert energy from Joules (J) to electron-volts (eV), divide by elementary charge e = 1.60 × 10⁻¹⁹ C."
+    ],
+    relatedFormulaIds: ["photon-energy-wavelength", "photon-energy-transition", "photoelectric-equation", "wave-speed"],
     variables: [
-      { id: "energy", symbol: "E", name: "Energy", unit: "J" },
+      { id: "energy", symbol: "E", name: "Photon energy", unit: "J" },
       { id: "planck", symbol: "h", name: "Planck constant", unit: "J s", defaultValue: "6.63e-34", isConstant: true },
-      { id: "frequency", symbol: "f", name: "Frequency", unit: "Hz" },
+      { id: "frequency", symbol: "f", name: "Frequency of light", unit: "Hz" },
     ],
   },
 
   {
     id: "photon-energy-wavelength",
-    name: "Photon Energy from Wavelength",
+    name: "Photon Energy from Wavelength (E = hc/λ)",
     equation: "E = \\frac{hc}{\\lambda}",
     topic: "Electrons, Waves and Photons",
+    topicId: "electrons-waves-photons",
     description:
-      "Calculates photon energy from wavelength.",
-
+      "Calculates photon energy directly from wavelength using Planck's constant and the speed of light (E = hc/λ).",
     calculatorType: "custom",
-
+    difficulty: "A-Level / High School",
+    examBoard: "OCR / AQA / Edexcel",
+    seoTitle: "Photon Energy from Wavelength Calculator | E = hc/λ",
+    seoDescription: "Calculate photon energy from wavelength using E = hc/λ with Planck's constant and speed of light. Convert nanometres (nm), metres, Joules (J), and eV.",
+    keywords: [
+      "constant photon energy the wavelength",
+      "photon energy from wavelength calculator",
+      "e=hc/lambda calculator",
+      "energy to wavelength calculator",
+      "wavelength to photon energy",
+      "constant photon energy wavelength formula"
+    ],
+    notes: [
+      "Combines wave speed c = fλ with Planck's relation E = hf to relate energy directly to wavelength: E = hc/λ.",
+      "The product hc ≈ 1.989 × 10⁻²⁵ J m ≈ 1240 eV nm, providing a convenient mental calculation check for visible light.",
+      "Wavelength is inversely proportional to photon energy: shorter wavelengths (e.g. UV, X-rays) carry higher energy per photon.",
+      "Ensure wavelength in nanometres (nm) is converted to metres (1 nm = 1 × 10⁻⁹ m) when computing energy in Joules."
+    ],
+    relatedFormulaIds: ["photon-energy-frequency", "photon-energy-transition", "photoelectric-equation", "de-broglie-wavelength"],
     variables: [
-      { id: "energy", symbol: "E", name: "Energy", unit: "J" },
+      { id: "energy", symbol: "E", name: "Photon energy", unit: "J" },
       { id: "planck", symbol: "h", name: "Planck constant", unit: "J s", defaultValue: "6.63e-34", isConstant: true },
       { id: "light-speed", symbol: "c", name: "Speed of light", unit: "m/s", defaultValue: "3.00e8", isConstant: true },
       { id: "wavelength", symbol: "λ", name: "Wavelength", unit: "m" },
@@ -1321,7 +1358,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "ideal-gas-particle",
-    name: "Ideal Gas Equation",
+    name: "Ideal Gas Equation (pV = NkT)",
     equation: "pV = NkT",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1456,7 +1493,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "ideal-gas-moles",
-    name: "Ideal Gas Equation",
+    name: "Ideal Gas Equation (pV = nRT)",
     equation: "pV = nRT",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1475,7 +1512,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "angular-velocity-period",
-    name: "Angular Velocity",
+    name: "Angular Velocity (ω = 2π/T)",
     equation: "\\omega = \\frac{2\\pi}{T}",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1491,7 +1528,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "angular-velocity-frequency",
-    name: "Angular Velocity",
+    name: "Angular Velocity (ω = 2πf)",
     equation: "\\omega = 2\\pi f",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1524,7 +1561,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "centripetal-acceleration",
-    name: "Centripetal Acceleration",
+    name: "Centripetal Acceleration (a = v²/r)",
     equation: "a = \\frac{v^2}{r}",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1541,7 +1578,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "centripetal-acceleration-angular",
-    name: "Centripetal Acceleration",
+    name: "Centripetal Acceleration (a = ω²r)",
     equation: "a = \\omega^2r",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1558,7 +1595,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "centripetal-force",
-    name: "Centripetal Force",
+    name: "Centripetal Force (F = mv²/r)",
     equation: "F = \\frac{mv^2}{r}",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1576,7 +1613,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "centripetal-force-angular",
-    name: "Centripetal Force",
+    name: "Centripetal Force (F = mω²r)",
     equation: "F = m\\omega^2r",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1651,7 +1688,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "gravitational-field-strength",
-    name: "Gravitational Field Strength",
+    name: "Gravitational Field Strength (g = F/m)",
     equation: "g = \\frac{F}{m}",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1782,7 +1819,7 @@ const physicsFormulas: Formula[] = [
 
   {
     id: "gravitational-field-equation",
-    name: "Gravitational Field Strength",
+    name: "Gravitational Field Strength (g = -GM/r²)",
     equation: "g = -\\frac{GM}{r^2}",
     topic: "Newtonian World and Astrophysics",
     description:
@@ -1877,13 +1914,31 @@ const physicsFormulas: Formula[] = [
   {
     id: "parallel-capacitors",
     name: "Capacitors in Parallel",
-    equation: "C = C_1+C_2+\\ldots",
+    equation: "C = C_1 + C_2",
     topic: "Particles and Medical Physics",
+    topicId: "particles-medical-physics",
     description:
-      "Calculates total capacitance for capacitors connected in parallel.",
-
+      "Calculates total equivalent capacitance for capacitors connected in parallel. Total capacitance is the direct sum of individual capacitances.",
     calculatorType: "custom",
-
+    difficulty: "A-Level / High School",
+    examBoard: "OCR / AQA / Edexcel",
+    seoTitle: "Capacitors in Parallel Calculator | C = C₁ + C₂",
+    seoDescription: "Calculate total capacitance for parallel capacitors using C = C₁ + C₂. Includes step-by-step working, microfarad and picofarad conversions, and circuit rules.",
+    keywords: [
+      "capacitors in parallel calculator",
+      "parallel capacitor formula",
+      "capacitors in parallel",
+      "add capacitors parallel",
+      "equivalent capacitance parallel",
+      "parallel circuit capacitance"
+    ],
+    notes: [
+      "For capacitors in parallel, potential difference V across each capacitor is identical.",
+      "Total charge stored is the sum of charges: Q_total = Q₁ + Q₂.",
+      "Total equivalent capacitance is always greater than any individual capacitor in parallel: C = C₁ + C₂ + ...",
+      "Contrast with resistors: parallel capacitors add directly, unlike parallel resistors which add reciprocally."
+    ],
+    relatedFormulaIds: ["series-capacitors", "capacitance", "parallel-plate-capacitance", "capacitor-energy-charge-voltage"],
     variables: [
       { id: "capacitance", symbol: "C", name: "Total capacitance", unit: "F" },
       { id: "capacitor-1", symbol: "C₁", name: "Capacitor 1", unit: "F" },
@@ -1894,13 +1949,31 @@ const physicsFormulas: Formula[] = [
   {
     id: "series-capacitors",
     name: "Capacitors in Series",
-    equation: "\\frac{1}{C}=\\frac{1}{C_1}+\\frac{1}{C_2}",
+    equation: "\\frac{1}{C} = \\frac{1}{C_1} + \\frac{1}{C_2}",
     topic: "Particles and Medical Physics",
+    topicId: "particles-medical-physics",
     description:
-      "Relates total capacitance to capacitors connected in series.",
-
+      "Calculates equivalent total capacitance for capacitors connected in series using reciprocal summation.",
     calculatorType: "custom",
-
+    difficulty: "A-Level / High School",
+    examBoard: "OCR / AQA / Edexcel",
+    seoTitle: "Capacitors in Series Calculator | 1/C = 1/C₁ + 1/C₂",
+    seoDescription: "Calculate equivalent series capacitance using 1/C = 1/C₁ + 1/C₂. Step-by-step reciprocal working, voltage distribution rules, and worked examples.",
+    keywords: [
+      "capacitors in series calculator",
+      "series capacitor formula",
+      "capacitors in series",
+      "equivalent capacitance series",
+      "reciprocal capacitance",
+      "series circuit capacitance"
+    ],
+    notes: [
+      "For capacitors in series, the same charge Q is stored on each capacitor: Q₁ = Q₂ = Q.",
+      "Total potential difference is shared across the capacitors: V_total = V₁ + V₂.",
+      "Total equivalent capacitance is always less than the smallest individual capacitance: 1/C = 1/C₁ + 1/C₂.",
+      "Contrast with parallel capacitors: series capacitors add reciprocally, just like parallel resistors."
+    ],
+    relatedFormulaIds: ["parallel-capacitors", "capacitance", "time-constant", "capacitor-energy-charge-voltage"],
     variables: [
       { id: "capacitance", symbol: "C", name: "Total capacitance", unit: "F" },
       { id: "capacitor-1", symbol: "C₁", name: "Capacitor 1", unit: "F" },

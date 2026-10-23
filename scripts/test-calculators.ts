@@ -21,6 +21,39 @@ function getTestValueForVar(formulaId: string, varId: string, symbol: string, de
     if (varId === "time") return 0.25; // 2.0 * 0.25 = 0.5 rad (well within [0, pi/2])
   }
 
+  if (formulaId === "shm-velocity-displacement") {
+    if (varId === "amplitude") return 5.0;
+    if (varId === "displacement") return 2.5;
+    if (varId === "angular-frequency") return 2.0;
+    if (varId === "velocity") return 2.0 * Math.sqrt(5.0 * 5.0 - 2.5 * 2.5);
+  }
+
+  if (formulaId === "capacitor-discharge-exponential") {
+    // RC = 1000 * 1e-4 = 0.1 s, t = 0.05 s
+    if (varId === "resistance") return 1000;
+    if (varId === "capacitance") return 1e-4;
+    if (varId === "time") return 0.05;
+    if (varId === "initial-charge") return 0.001;
+    if (varId === "charge") return 0.001 * Math.exp(-0.05 / 0.1);
+  }
+
+  if (formulaId === "capacitor-charging-exponential") {
+    // RC = 1000 * 1e-4 = 0.1 s, t = 0.05 s
+    if (varId === "resistance") return 1000;
+    if (varId === "capacitance") return 1e-4;
+    if (varId === "time") return 0.05;
+    if (varId === "max-charge") return 0.001;
+    if (varId === "charge") return 0.001 * (1 - Math.exp(-0.05 / 0.1));
+  }
+
+  if (formulaId === "doppler-redshift") {
+    if (varId === "velocity") return 3000;
+    if (varId === "light-speed") return 3e8;
+    if (varId === "redshift") return 1e-5; // 3000 / 3e8
+    if (varId === "wavelength") return 5e-7;
+    if (varId === "delta-wavelength") return 5e-12; // 1e-5 * 5e-7
+  }
+
   if (formulaId === "quadratic-formula") {
     if (varId === "a") return 1.0;
     if (varId === "b") return -5.0;

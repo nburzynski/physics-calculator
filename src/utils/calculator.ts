@@ -1,4 +1,5 @@
 import type { Formula } from "../types/formula";
+import { parseMathExpression } from "./mathParser";
 
 export type CalculationSuccess = {
   success: true;
@@ -103,14 +104,15 @@ export function calculateFormula(
   const vals: Record<string, number> = {};
   for (const v of formula.variables) {
     if (v.id !== missing) {
-      const parsed = Number(rawValues[v.id]);
-      if (Number.isNaN(parsed)) {
+      const raw = rawValues[v.id];
+      const parsed = parseMathExpression(raw);
+      if (!parsed.success) {
         return {
           success: false,
-          error: `Invalid number entered for ${v.name} (${v.symbol}).`,
+          error: `Invalid number entered for ${v.name} (${v.symbol}): ${parsed.error}`,
         };
       }
-      vals[v.id] = parsed;
+      vals[v.id] = parsed.value;
     }
   }
 
@@ -121,13 +123,14 @@ export function calculateFormula(
   // 1. SIMPLE MULTIPLICATION: A = B * C
   // ============================================================
   if (
-    formula.calculatorType === "multiply" ||
-    formula.id === "charge" ||
-    formula.id === "latent-heat" ||
-    formula.id === "circular-velocity" ||
-    formula.id === "time-constant" ||
-    formula.id === "acoustic-impedance" ||
-    formula.id === "photon-energy-frequency"
+    (formula.calculatorType === "multiply" ||
+      formula.id === "charge" ||
+      formula.id === "latent-heat" ||
+      formula.id === "circular-velocity" ||
+      formula.id === "time-constant" ||
+      formula.id === "acoustic-impedance" ||
+      formula.id === "photon-energy-frequency") &&
+    formula.variables.length === 3
   ) {
     const [first, second, third] = formula.variables;
     const v1 = val(first.id);
@@ -175,13 +178,14 @@ export function calculateFormula(
   // 2. SIMPLE DIVISION: A = B / C
   // ============================================================
   if (
-    formula.calculatorType === "divide" ||
-    formula.id === "capacitance" ||
-    formula.id === "gravitational-field-strength" ||
-    formula.id === "electric-field-strength" ||
-    formula.id === "electric-field-uniform" ||
-    formula.id === "de-broglie-wavelength" ||
-    formula.id === "refractive-index"
+    (formula.calculatorType === "divide" ||
+      formula.id === "capacitance" ||
+      formula.id === "gravitational-field-strength" ||
+      formula.id === "electric-field-strength" ||
+      formula.id === "electric-field-uniform" ||
+      formula.id === "de-broglie-wavelength" ||
+      formula.id === "refractive-index") &&
+    formula.variables.length === 3
   ) {
     const [first, second, third] = formula.variables;
     const v1 = val(first.id);
@@ -2331,6 +2335,16 @@ export function calculateFormula(
       const ans = (3 * p * V) / (N * m);
       return makeSteps(eq, symbol, unit, "c² = 3pV / (Nm)", `c² = (3 × ${fNum(p)} × ${fNum(V)}) / (${fNum(N)} × ${fNum(m)})`, ans);
     }
+    if (missing === "particles") {
+      if (m === 0 || cSq === 0) return { success: false, error: "Molecular mass and mean square speed cannot be zero." };
+      const ans = (3 * p * V) / (m * cSq);
+      return makeSteps(eq, symbol, unit, "N = 3pV / (mc²)", `N = (3 × ${fNum(p)} × ${fNum(V)}) / (${fNum(m)} × ${fNum(cSq)})`, ans);
+    }
+    if (missing === "molecular-mass") {
+      if (N === 0 || cSq === 0) return { success: false, error: "Number of particles and mean square speed cannot be zero." };
+      const ans = (3 * p * V) / (N * cSq);
+      return makeSteps(eq, symbol, unit, "m = 3pV / (Nc²)", `m = (3 × ${fNum(p)} × ${fNum(V)}) / (${fNum(N)} × ${fNum(cSq)})`, ans);
+    }
   }
 
   // ============================================================
@@ -2790,6 +2804,24 @@ export function calculateFormula(
       if (ratio <= 0) return { success: false, error: "Q must be less than Q0." };
       const ans = -tau * Math.log(ratio);
       return makeSteps(eq, symbol, unit, "t = -RC × ln(1 - Q/Q0)", `t = -(${fNum(R)}×${fNum(C)}) × ln(1 - ${fNum(Q)}/${fNum(Q0)})`, ans);
+    }
+    if (missing === "resistance") {
+      if (C === 0 || Q0 === 0) return { success: false, error: "C and Q0 cannot be zero." };
+      const ratio = 1 - Q / Q0;
+      if (ratio <= 0) return { success: false, error: "Q must be less than Q0." };
+      const lnRatio = Math.log(ratio);
+      if (lnRatio === 0) return { success: false, error: "Charge Q cannot be zero." };
+      const ans = -t / (C * lnRatio);
+      return makeSteps(eq, symbol, unit, "R = -t / (C × ln(1 - Q/Q0))", `R = -${fNum(t)} / (${fNum(C)} × ln(1 - ${fNum(Q)}/${fNum(Q0)}))`, ans);
+    }
+    if (missing === "capacitance") {
+      if (R === 0 || Q0 === 0) return { success: false, error: "R and Q0 cannot be zero." };
+      const ratio = 1 - Q / Q0;
+      if (ratio <= 0) return { success: false, error: "Q must be less than Q0." };
+      const lnRatio = Math.log(ratio);
+      if (lnRatio === 0) return { success: false, error: "Charge Q cannot be zero." };
+      const ans = -t / (R * lnRatio);
+      return makeSteps(eq, symbol, unit, "C = -t / (R × ln(1 - Q/Q0))", `C = -${fNum(t)} / (${fNum(R)} × ln(1 - ${fNum(Q)}/${fNum(Q0)}))`, ans);
     }
   }
 

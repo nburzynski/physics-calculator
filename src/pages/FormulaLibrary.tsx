@@ -81,16 +81,19 @@ export function FormulaLibrary() {
   return (
     <main className="formula-library-page">
       <SEO
-        title="STEM Formula Library | Physics, Mathematics &amp; Chemistry Equations"
-        description="Comprehensive reference library of over 100 STEM formulas across Physics, Mathematics, Chemistry, Engineering, and Computer Science with instant interactive mathematical solvers."
+        title="STEM Formula Library & Equations | 144 Interactive Solvers"
+        description="Comprehensive reference library of 144 verified STEM formulas across Physics, Mathematics, Chemistry, Engineering, and Computer Science with instant interactive mathematical solvers and worked examples."
         canonicalPath="/formulas"
         keywords={[
+          "stem equations",
           "STEM formula library",
           "physics equation sheet",
           "maths formulas",
           "chemistry calculators",
           "engineering equations",
           "OCR A level physics formulas",
+          "AQA physics equations",
+          "Edexcel physics equations",
         ]}
       />
 

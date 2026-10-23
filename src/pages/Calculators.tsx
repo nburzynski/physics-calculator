@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { formulas } from "../data/formulas";
 import { formatPhysicsNumber } from "../utils/calculator";
+import { parseMathExpression } from "../utils/mathParser";
 import { STEM_CONSTANTS } from "../utils/constants";
 import MathView from "../components/MathView";
 import WorkingSteps from "../components/WorkingSteps";
@@ -59,11 +60,32 @@ export default function Calculators() {
   } | null>(null);
 
   const handleSuvatSolve = () => {
-    const s = suvatInputs.s.trim() !== "" ? Number(suvatInputs.s) : null;
-    const u = suvatInputs.u.trim() !== "" ? Number(suvatInputs.u) : null;
-    const v = suvatInputs.v.trim() !== "" ? Number(suvatInputs.v) : null;
-    const a = suvatInputs.a.trim() !== "" ? Number(suvatInputs.a) : null;
-    const t = suvatInputs.t.trim() !== "" ? Number(suvatInputs.t) : null;
+    const parseField = (name: string, raw: string): { val: number | null; error?: string } => {
+      if (raw.trim() === "") return { val: null };
+      const parsed = parseMathExpression(raw);
+      if (!parsed.success) {
+        return { val: null, error: `Invalid input for ${name}: ${parsed.error}` };
+      }
+      return { val: parsed.value };
+    };
+
+    const sRes = parseField("Displacement (s)", suvatInputs.s);
+    const uRes = parseField("Initial Velocity (u)", suvatInputs.u);
+    const vRes = parseField("Final Velocity (v)", suvatInputs.v);
+    const aRes = parseField("Acceleration (a)", suvatInputs.a);
+    const tRes = parseField("Time (t)", suvatInputs.t);
+
+    const firstErr = sRes.error || uRes.error || vRes.error || aRes.error || tRes.error;
+    if (firstErr) {
+      setSuvatResult({ solved: [], error: firstErr });
+      return;
+    }
+
+    const s = sRes.val;
+    const u = uRes.val;
+    const v = vRes.val;
+    const a = aRes.val;
+    const t = tRes.val;
 
     const knownCount = [s, u, v, a, t].filter((x) => x !== null).length;
     if (knownCount !== 3) {
@@ -392,8 +414,9 @@ export default function Calculators() {
   const [photonWavelengthUnit, setPhotonWavelengthUnit] = useState<"m" | "nm">("nm");
 
   const photonResult = (() => {
-    const raw = Number(photonInputValue);
-    if (!Number.isFinite(raw) || raw <= 0) return null;
+    const parsed = parseMathExpression(photonInputValue);
+    if (!parsed.success || !Number.isFinite(parsed.value) || parsed.value <= 0) return null;
+    const raw = parsed.value;
 
     const c = STEM_CONSTANTS.c.value;
     const h = STEM_CONSTANTS.h.value;
@@ -434,9 +457,14 @@ export default function Calculators() {
   const [r2, setR2] = useState("200");
 
   const dividerResult = (() => {
-    const vInNum = Number(vin);
-    const r1Num = Number(r1);
-    const r2Num = Number(r2);
+    const vInParsed = parseMathExpression(vin);
+    const r1Parsed = parseMathExpression(r1);
+    const r2Parsed = parseMathExpression(r2);
+
+    if (!vInParsed.success || !r1Parsed.success || !r2Parsed.success) return null;
+    const vInNum = vInParsed.value;
+    const r1Num = r1Parsed.value;
+    const r2Num = r2Parsed.value;
 
     if (r1Num <= 0 || r2Num <= 0 || !Number.isFinite(vInNum)) return null;
 
@@ -474,14 +502,17 @@ export default function Calculators() {
   return (
     <main className="calculators-page">
       <SEO
-        title="Interactive STEM &amp; Physics Calculators | Multi-Variable Solvers"
-        description="Multi-variable calculation studios for Physics and STEM: Universal SUVAT 5-variable solver, Photon and Quantum converter, Circuit Potential Divider studio, and interactive formula solver."
+        title="Interactive STEM & Physics Calculators | Multi-Variable Solvers"
+        description="Multi-variable calculation studios for Physics and STEM: Universal SUVAT 5-variable solver, Quantum & Photon converter (wavelength, frequency, Joules, eV), Circuit Potential Divider studio, and interactive equation runner."
         canonicalPath="/calculators"
         keywords={[
           "SUVAT solver all 5 variables",
           "physics calculator",
+          "constant photon energy the wavelength",
+          "chemistry frequency of light equation",
           "photon energy eV converter",
           "potential divider calculator",
+          "stem equations",
           "STEM solvers",
         ]}
       />

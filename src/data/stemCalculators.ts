@@ -187,7 +187,7 @@ export const stemCalculators: Formula[] = [
 
   {
     id: "electrical-power-voltage-current",
-    name: "Electrical Power (P = VI)",
+    name: "DC Electrical Power (P = VI)",
     equation: "P = VI",
     topic: "Electrical and Power Engineering",
     subjectId: "engineering",

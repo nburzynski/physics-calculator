@@ -9,6 +9,32 @@ import SEO from "../components/SEO";
 import FormulaCalculator from "../components/FormulaCalculator";
 import { getWorkedExample } from "../utils/workedExamples";
 
+function cleanEquationForMeta(eq: string): string {
+  return eq
+    .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "($1)/($2)")
+    .replace(/\\left\(/g, "(")
+    .replace(/\\right\)/g, ")")
+    .replace(/\\pm/g, "±")
+    .replace(/\\times/g, "×")
+    .replace(/\\cdot/g, "·")
+    .replace(/\\Delta/g, "Δ")
+    .replace(/\\lambda/g, "λ")
+    .replace(/\\theta/g, "θ")
+    .replace(/\\omega/g, "ω")
+    .replace(/\\pi/g, "π")
+    .replace(/\\varepsilon/g, "ε")
+    .replace(/\\epsilon/g, "ε")
+    .replace(/\\sigma/g, "σ")
+    .replace(/\\rho/g, "ρ")
+    .replace(/\\sqrt\{([^}]+)\}/g, "√($1)")
+    .replace(/\\overline\{([^}]+)\}/g, "$1")
+    .replace(/\\text\{([^}]+)\}/g, "$1")
+    .replace(/\\mathbf\{([^}]+)\}/g, "$1")
+    .replace(/\\/g, "")
+    .replace(/\{|\}/g, "")
+    .trim();
+}
+
 export function FormulaPage() {
   const { formulaId } = useParams<{ formulaId: string }>();
 
@@ -37,14 +63,16 @@ export function FormulaPage() {
   const related = getRelatedFormulas(formula, 4);
   const workedExample = getWorkedExample(formula);
 
-  // SEO title format: Name Calculator | Equation / Symbols
-  const seoTitle = `${formula.name} Calculator | ${formula.variables.map((v) => v.symbol).join(", ")}`;
+  // SEO title & meta description (prioritising custom SEO if set)
+  const seoTitle = formula.seoTitle || `${formula.name} Calculator | ${formula.variables.map((v) => v.symbol).join(", ")}`;
+  const cleanEq = cleanEquationForMeta(formula.equation);
+  const seoDescription = formula.seoDescription || `Calculate ${formula.name} (${formula.variables.map((v) => v.symbol).join(", ")}) using equation ${cleanEq}. Step-by-step rearranging, variable substitutions, standard SI units, and worked examples.`;
 
   return (
     <main className="formula-page">
       <SEO
         title={seoTitle}
-        description={`Calculate ${formula.name} (${formula.variables.map((v) => v.symbol).join(", ")}) using equation ${formula.equation}. Step-by-step rearranging, variable substitutions, standard SI units, and worked examples.`}
+        description={seoDescription}
         canonicalPath={`/formulas/${formula.id}`}
         keywords={[
           formula.name,
